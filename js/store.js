@@ -9,7 +9,7 @@
 
   // Colunas de cada tabela, em camelCase; no banco ficam em snake_case (driveUrl -> drive_url).
   const COLS = {
-    books: ["id", "title", "author", "year", "genre", "territory", "pages", "isbn", "driveUrl", "synopsis"],
+    books: ["id", "title", "author", "year", "genre", "territory", "pages", "isbn", "driveUrl", "coverUrl", "synopsis"],
     contests: ["id", "title", "status", "category", "deadline", "publishedAt", "excerpt", "coverHue", "regulation"],
   };
 
@@ -40,6 +40,12 @@
     const item = {};
     COLS[table].forEach((k) => (item[k] = row[snake(k)]));
     return item;
+  }
+
+  // ID do arquivo num link do Drive (".../file/d/ID/view" ou "...?id=ID").
+  function driveId(url) {
+    const m = String(url || "").match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || String(url || "").match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    return m ? m[1] : null;
   }
 
   function requireDb() {
@@ -217,11 +223,15 @@
     },
     drivePreview(url) {
       if (!url) return "";
-      const file = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-      if (file) return "https://drive.google.com/file/d/" + file[1] + "/preview";
-      const open = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-      if (open) return "https://drive.google.com/file/d/" + open[1] + "/preview";
-      return url;
+      const id = driveId(url);
+      return id ? "https://drive.google.com/file/d/" + id + "/preview" : url;
+    },
+    // Endereço de imagem para a capa. Links do Drive viram miniatura (o arquivo precisa
+    // estar compartilhado como "Qualquer pessoa com o link"); outros links passam direto.
+    coverImage(url) {
+      if (!url) return "";
+      const id = driveId(url);
+      return id ? "https://drive.google.com/thumbnail?id=" + id + "&sz=w1000" : url;
     },
   };
 

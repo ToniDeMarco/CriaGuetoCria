@@ -48,6 +48,7 @@
         <td>${CGCUI.escapeHtml(b.author)}</td>
         <td>${CGCUI.escapeHtml(b.genre)}</td>
         <td>${b.year}</td>
+        <td>${b.coverUrl ? "Sim" : "—"}</td>
         <td class="row-actions">
           <button class="btn btn-ghost light" data-edit="${b.id}">Editar</button>
           <button class="btn btn-ghost light" data-del="${b.id}">Apagar</button>
@@ -59,7 +60,7 @@
       <h1>Biblioteca</h1>
       <p><button class="btn btn-solid" id="new-book">Novo livro</button></p>
       <div style="overflow:auto"><table class="table"><thead><tr>
-        <th>Título</th><th>Autora</th><th>Gênero</th><th>Ano</th><th></th>
+        <th>Título</th><th>Autora</th><th>Gênero</th><th>Ano</th><th>Capa</th><th></th>
       </tr></thead><tbody>${rows}</tbody></table></div>
       <div id="form"></div>
     `;
@@ -90,9 +91,24 @@
       <div class="field"><span>Páginas</span><input id="p" type="number" value="${b.pages}" /></div>
       <div class="field"><span>ISBN</span><input id="i" value="${CGCUI.escapeHtml(b.isbn || "")}" /></div>
       <div class="field"><span>Link do Google Drive</span><input id="d" value="${CGCUI.escapeHtml(b.driveUrl || "")}" placeholder="https://drive.google.com/..." /></div>
+      <div class="field"><span>Capa — link da imagem no Google Drive (compartilhada como "Qualquer pessoa com o link"). Vazio usa a capa desenhada.</span><input id="cv" value="${CGCUI.escapeHtml(b.coverUrl || "")}" placeholder="https://drive.google.com/file/d/.../view" /></div>
+      <div id="cover-preview" style="width:160px;margin:0 0 18px"></div>
       <div class="field"><span>Sinopse</span><textarea id="s">${CGCUI.escapeHtml(b.synopsis)}</textarea></div>
       <button class="btn btn-solid" id="save">Publicar no acervo</button>
     `;
+    const cover = document.getElementById("cv");
+    const preview = document.getElementById("cover-preview");
+    const renderPreview = () => {
+      const draft = { ...b, title: document.getElementById("t").value || "Título", author: document.getElementById("a").value, coverUrl: cover.value.trim() };
+      preview.innerHTML = `<div class="${CGCUI.coverClass(draft)}" style="${CGCUI.coverStyle(draft)}">
+        ${CGCUI.coverImg(draft)}
+        <span class="book-cover-kicker">Cria Gueto Cria</span>
+        <h3>${CGCUI.escapeHtml(draft.title)}</h3>
+        <p>${CGCUI.escapeHtml(draft.author)}</p>
+      </div>`;
+    };
+    cover.addEventListener("input", renderPreview);
+    renderPreview();
     const save = form.querySelector("#save");
     save.onclick = async () => {
       const ok = await run(save, () => CGC.upsertBook({
@@ -105,6 +121,7 @@
         pages: Number(document.getElementById("p").value),
         isbn: document.getElementById("i").value.trim(),
         driveUrl: document.getElementById("d").value.trim(),
+        coverUrl: cover.value.trim(),
         synopsis: document.getElementById("s").value.trim(),
       }));
       if (ok) books();

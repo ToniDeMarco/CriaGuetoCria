@@ -11,9 +11,11 @@ create table if not exists public.books (
   pages int,
   isbn text,
   drive_url text,
+  cover_url text,
   synopsis text,
   created_at timestamptz not null default now()
 );
+alter table public.books add column if not exists cover_url text; -- para bancos criados antes da capa
 
 create table if not exists public.contests (
   id text primary key,

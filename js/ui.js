@@ -100,10 +100,22 @@
     return `--h:${h}`;
   }
 
+  // Imagem da capa por cima da capa desenhada; se não carregar, some e fica a desenhada.
+  function coverImg(book) {
+    const src = CGC.coverImage(book.coverUrl);
+    if (!src) return "";
+    return `<img class="book-cover-img" src="${escapeHtml(src)}" alt="Capa de ${escapeHtml(book.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.classList.remove('has-image');this.remove()" />`;
+  }
+
+  function coverClass(book, extra = "") {
+    return "book-cover" + extra + (book.coverUrl ? " has-image" : "");
+  }
+
   function bookCard(book, i) {
     return `
       <article class="book-card" style="${coverStyle(book, i)}" data-id="${book.id}">
-        <div class="book-cover">
+        <div class="${coverClass(book)}">
+          ${coverImg(book)}
           <span class="book-cover-kicker">Cria Gueto Cria</span>
           <h3>${escapeHtml(book.title)}</h3>
           <p>${escapeHtml(book.author)}</p>
@@ -146,7 +158,8 @@
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="book-title">
         <button class="modal-close" aria-label="Fechar">×</button>
         <div class="modal-grid">
-          <div class="book-cover lg" style="${coverStyle(book)}">
+          <div class="${coverClass(book, " lg")}" style="${coverStyle(book)}">
+            ${coverImg(book)}
             <span class="book-cover-kicker">Cria Gueto Cria</span>
             <h3 id="book-title">${escapeHtml(book.title)}</h3>
             <p>${escapeHtml(book.author)}</p>
@@ -198,5 +211,7 @@
     openBookModal,
     waLink,
     coverStyle,
+    coverImg,
+    coverClass,
   };
 })();
