@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Redação — Cria Gueto Cria</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="login-screen" class="login-wrap">
+    <div class="login-card">
+      <p class="kicker">Área da editora</p>
+      <h1>Redação</h1>
+      <p>Acesso para publicar livros no acervo e regulamentos de concurso.</p>
+      <div class="field"><span>E-mail</span><input id="user" type="email" autocomplete="username" /></div>
+      <div class="field"><span>Senha</span><input id="pass" type="password" autocomplete="current-password" /></div>
+      <p class="warn" id="err"></p>
+      <button class="btn btn-light" id="do-login">Entrar</button>
+      <p><a href="index.html">Voltar ao site</a></p>
+    </div>
+  </div>
+
+  <div id="admin-shell" class="admin-shell" hidden>
+    <aside class="admin-side">
+      <p class="footer-brand" style="font-size:22px;margin:0 12px 18px">Cria Gueto Cria</p>
+      <button class="linkish is-on" data-view="dash">Painel</button>
+      <button class="linkish" data-view="books">Livros</button>
+      <button class="linkish" data-view="contests">Concursos</button>
+      <button class="linkish" data-view="settings">Configurações</button>
+      <a href="index.html">Ver o site</a>
+      <button class="linkish" data-view="out">Sair</button>
+    </aside>
+    <main class="admin-main" id="view"></main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/seed.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

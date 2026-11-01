@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Concursos literários — Cria Gueto Cria</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="page-wrap">
+    <div id="site-chrome"></div>
+    <header class="page-hero">
+      <p class="kicker" style="max-width:1180px;margin:0 auto 8px">Editais</p>
+      <h1>Concursos literários</h1>
+      <p>Regulamentos oficiais da casa. Leia com calma, inscreva no prazo, dispute o catálogo.</p>
+    </header>
+    <section class="section">
+      <div class="contest-grid" id="list"></div>
+    </section>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/seed.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    CGC.ready().then(() => {
+      CGCUI.mountChrome("concursos");
+      const list = CGC.contests().slice().sort((a, b) => (b.publishedAt || "").localeCompare(a.publishedAt || ""));
+      document.getElementById("list").innerHTML = list.map((c) => `
+        <article class="contest-card">
+          <span class="pill">${CGCUI.statusLabel(CGC.statusOf(c))}</span>
+          <h3>${CGCUI.escapeHtml(c.title)}</h3>
+          <p>${CGCUI.escapeHtml(c.excerpt)}</p>
+          <p class="meta">${CGCUI.escapeHtml(c.category)} · publicado ${CGCUI.formatDate(c.publishedAt)} · prazo ${CGCUI.formatDate(c.deadline)}</p>
+          <p><a class="btn btn-solid" href="concurso.html?id=${encodeURIComponent(c.id)}">Abrir regulamento</a></p>
+        </article>
+      `).join("") || "<p>Nenhum edital publicado ainda.</p>";
+    });
+  </script>
+</body>
+</html>

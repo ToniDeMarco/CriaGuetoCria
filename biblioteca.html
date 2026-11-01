@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Biblioteca digital — Cria Gueto Cria</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="page-wrap">
+    <div id="site-chrome"></div>
+    <header class="page-hero">
+      <p class="kicker" style="max-width:1180px;margin:0 auto 8px">Acervo</p>
+      <h1>Biblioteca digital</h1>
+      <p>O Drive da editora, agora em casa. <span data-book-count>50</span> títulos de mulheres negras — para ler, indicar, disputar espaço na estante.</p>
+    </header>
+    <section class="section">
+      <div class="filters">
+        <input class="search" id="q" type="search" placeholder="Buscar por título, autora, ISBN…" />
+        <button class="chip is-on" data-f="all">Todos</button>
+        <button class="chip" data-f="Poesia">Poesia</button>
+        <button class="chip" data-f="Romance">Romance</button>
+        <button class="chip" data-f="Ensaio">Ensaio</button>
+        <button class="chip" data-f="Contos">Contos</button>
+        <button class="chip" data-f="Memória">Memória</button>
+        <button class="chip" data-f="Infantojuvenil">Infantojuvenil</button>
+        <button class="chip" data-f="Antologia">Antologia</button>
+        <button class="chip" data-f="Teatro">Teatro</button>
+      </div>
+      <p class="count" id="count" style="max-width:1180px;margin:0 auto 18px"></p>
+      <div class="grid-books" id="shelf"></div>
+    </section>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/seed.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    CGC.ready().then(() => {
+      CGCUI.mountChrome("biblioteca");
+      let genre = "all";
+      const shelf = document.getElementById("shelf");
+      const q = document.getElementById("q");
+      function render() {
+        const term = q.value.trim().toLowerCase();
+        const list = CGC.books().filter((b) => {
+          const g = genre === "all" || b.genre === genre;
+          const t = !term || [b.title, b.author, b.isbn, b.territory, b.synopsis].join(" ").toLowerCase().includes(term);
+          return g && t;
+        });
+        document.getElementById("count").textContent = list.length + " título" + (list.length === 1 ? "" : "s") + " no recorte";
+        shelf.innerHTML = list.map((b, i) => CGCUI.bookCard(b, i)).join("");
+      }
+      document.querySelector(".filters").addEventListener("click", (e) => {
+        const chip = e.target.closest(".chip");
+        if (!chip) return;
+        document.querySelectorAll(".chip").forEach((c) => c.classList.remove("is-on"));
+        chip.classList.add("is-on");
+        genre = chip.dataset.f;
+        render();
+      });
+      q.addEventListener("input", render);
+      shelf.addEventListener("click", (e) => {
+        const card = e.target.closest(".book-card");
+        if (card) CGCUI.openBookModal(card.dataset.id);
+      });
+      render();
+    });
+  </script>
+</body>
+</html>

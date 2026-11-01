@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Regulamento — Cria Gueto Cria</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="page-wrap">
+    <div id="site-chrome"></div>
+    <header class="page-hero">
+      <p class="kicker" id="kicker" style="max-width:1180px;margin:0 auto 8px"></p>
+      <h1 id="title"></h1>
+      <p id="excerpt"></p>
+    </header>
+    <section class="section">
+      <article class="regulation" id="body"></article>
+      <p style="max-width:760px;margin:28px auto 0;display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn btn-ghost dark" href="concursos.html">Todos os concursos</a>
+        <a class="btn btn-solid" id="wa" target="_blank" rel="noopener">Dúvidas no WhatsApp</a>
+      </p>
+    </section>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/seed.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    CGC.ready().then(() => {
+      CGCUI.mountChrome("concursos");
+      const id = new URLSearchParams(location.search).get("id");
+      const c = CGC.contest(id);
+      const s = CGC.settings();
+      if (!c) {
+        document.getElementById("title").textContent = "Edital não encontrado";
+        document.getElementById("body").innerHTML = "<p>Este regulamento foi removido ou o link está incompleto.</p>";
+      } else {
+        document.title = c.title + " — Cria Gueto Cria";
+        document.getElementById("kicker").textContent = CGCUI.statusLabel(CGC.statusOf(c)) + " · " + c.category;
+        document.getElementById("title").textContent = c.title;
+        document.getElementById("excerpt").textContent = c.excerpt;
+        document.getElementById("body").innerHTML = c.regulation;
+        document.getElementById("wa").href = CGCUI.waLink(s.whatsapp, "Dúvida sobre o concurso: " + c.title);
+      }
+    });
+  </script>
+</body>
+</html>

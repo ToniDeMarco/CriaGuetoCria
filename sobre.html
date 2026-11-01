@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A editora — Cria Gueto Cria</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="page-wrap">
+    <div id="site-chrome"></div>
+    <header class="page-hero">
+      <p class="kicker" style="max-width:1180px;margin:0 auto 8px">A casa</p>
+      <h1>Editora de mulheres negras para mulheres negras</h1>
+      <p>Não somos selo de diversidade. Somos uma casa. Publicamos como quem funda território.</p>
+    </header>
+    <section class="section">
+      <div class="about-grid">
+        <img src="assets/img/editora-retrato.jpg" alt="Retrato editorial de uma escritora negra em sua mesa de trabalho" />
+        <div class="prose">
+          <p class="eyebrow">Manifesto</p>
+          <h2 class="display" style="color:var(--ink)">A frase negra não pede mesa. Ela <em>é</em> a mesa.</h2>
+          <p>A Cria Gueto Cria existe para que o livro de uma mulher negra não precise se explicar para entrar no catálogo. Aqui o recorte é o centro: autoras cis e trans, de terreiro, de favela, de quilombo e da diáspora, publicadas com contrato, design e distribuição de editora — não de favor.</p>
+          <p>O acervo digital, que vivia em pastas do Google Drive, passa a ter vitrine, busca e ficha. Os concursos literários deixam de circular só no Instagram: o regulamento fica permanente, datado, editável pela redação.</p>
+          <p>Quatro linhas atravessam o catálogo — Quilombo, Diáspora, Terreiro e Favela — como os quatro cantos de um pano. Não são prateleiras de marketing. São geografias da língua.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/seed.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script>CGC.ready().then(() => CGCUI.mountChrome("sobre"));</script>
+</body>
+</html>

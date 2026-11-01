@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cria Gueto Cria — Editora de mulheres negras</title>
+  <meta name="description" content="Editora de mulheres negras para mulheres negras. Biblioteca digital, concursos literários e um catálogo que trata a palavra como território." />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="page-wrap">
+    <div id="site-chrome"></div>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="kicker">Casa editorial · desde o gueto</p>
+        <h1>Nós criamos <em>quatro linhas de mundo</em> em livros de mulheres negras</h1>
+        <p class="lede">Cada título é um território: quilombo, diáspora, terreiro e favela. Uma editora que publica para quem sempre esteve no centro da história — e à margem do catálogo.</p>
+        <div class="hero-actions">
+          <a class="btn btn-light" href="biblioteca.html">Entrar na biblioteca</a>
+          <a class="btn btn-ghost light" href="concursos.html">Ver concursos</a>
+        </div>
+        <p class="hero-note"><span data-book-count>50</span> títulos em circulação · Regulamentos abertos · Acervo no Drive da casa</p>
+      </div>
+      <div class="hero-art">
+        <span class="corner tl"></span><span class="corner tr"></span>
+        <span class="corner bl"></span><span class="corner br"></span>
+        <img src="assets/img/hero-autora.jpg" alt="Ilustração de uma mulher negra com um livro, em padrão têxtil africano" />
+      </div>
+    </section>
+
+    <section class="territories" aria-label="Linhas editoriais">
+      <article class="terr t1"><small>Linha 01</small><h3>Quilombo</h3></article>
+      <article class="terr t2"><small>Linha 02</small><h3>Diáspora</h3></article>
+      <article class="terr t3"><small>Linha 03</small><h3>Terreiro</h3></article>
+      <article class="terr t4"><small>Linha 04</small><h3>Favela</h3></article>
+    </section>
+
+    <section class="split-story">
+      <div class="copy">
+        <p class="eyebrow">Manifesto</p>
+        <h2 class="display">Livros que <em>reúnem o gosto</em> de um continente inteiro</h2>
+        <p>A Cria Gueto Cria nasce da certeza de que literatura negra escrita por mulheres não é nicho: é fundação. Publicamos poesia, romance, ensaio, memória e teatro com o padrão de uma casa editorial clássica e a ética de uma ocupação.</p>
+        <p>O acervo digital — antes só no Google Drive — agora habita esta biblioteca. Os concursos literários, com regulamento integral, ficam à vista. A porta dos fundos, para quem edita a casa, também.</p>
+      </div>
+      <div class="landscape">
+        <img src="assets/img/paisagem-ancestral.jpg" alt="Paisagem ilustrada de savana ao entardecer, com acácias" />
+      </div>
+    </section>
+
+    <section class="farmers">
+      <div class="farmers-photo">
+        <span class="ornament a"></span><span class="ornament b"></span>
+        <figure class="frame">
+          <img src="assets/img/manuscrito-cafe.jpg" alt="Manuscrito entre ramos de café, metáfora da colheita literária" />
+        </figure>
+      </div>
+      <div class="farmers-copy">
+        <p class="kicker">Origem</p>
+        <h2>Originais de autoras verificadas — e de território real</h2>
+        <p>Nosso catálogo não sai de uma esteira anônima. Cada livro entra por leitura atenta, conversa com a autora e contrato justo. Selecionamos para publicar o sabor que só quem viveu a frase consegue escrever.</p>
+        <p style="margin-top:22px"><a class="btn btn-light" href="sobre.html">Conhecer a casa</a></p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Catálogo</p>
+          <h2 class="display">Destaques da casa</h2>
+        </div>
+        <a class="btn btn-ghost dark" href="biblioteca.html">Ver os <span data-book-count>50</span> títulos</a>
+      </div>
+      <div class="grid-books" id="featured-books"></div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Chamadas</p>
+          <h2 class="display">Concursos e regulamentos</h2>
+        </div>
+        <a class="btn btn-ghost dark" href="concursos.html">Todos os editais</a>
+      </div>
+      <div class="contest-grid" id="home-contests"></div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/seed.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    CGC.ready().then(() => {
+      CGCUI.mountChrome("home");
+      const books = CGC.books().slice(0, 5);
+      document.getElementById("featured-books").innerHTML = books.map((b, i) => CGCUI.bookCard(b, i)).join("");
+      document.getElementById("featured-books").addEventListener("click", (e) => {
+        const card = e.target.closest(".book-card");
+        if (card) CGCUI.openBookModal(card.dataset.id);
+      });
+      document.getElementById("home-contests").innerHTML = CGC.contests().map((c) => `
+        <article class="contest-card">
+          <span class="pill">${CGCUI.statusLabel(CGC.statusOf(c))}</span>
+          <h3>${CGCUI.escapeHtml(c.title)}</h3>
+          <p>${CGCUI.escapeHtml(c.excerpt)}</p>
+          <p class="meta">${CGCUI.escapeHtml(c.category)} · ${CGCUI.formatDate(c.deadline)}</p>
+          <p><a class="btn btn-ghost dark" href="concurso.html?id=${encodeURIComponent(c.id)}">Ler regulamento</a></p>
+        </article>
+      `).join("");
+    });
+  </script>
+</body>
+</html>

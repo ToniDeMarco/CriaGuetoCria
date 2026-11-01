@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contato — Cria Gueto Cria</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="page-wrap">
+    <div id="site-chrome"></div>
+    <header class="page-hero">
+      <p class="kicker" style="max-width:1180px;margin:0 auto 8px">Fale com a casa</p>
+      <h1>Instagram, WhatsApp, YouTube</h1>
+      <p>Originais, imprensa, livrarias e dúvidas de concurso: escolha o canal. A redação responde em horário comercial.</p>
+    </header>
+    <section class="section">
+      <div class="contact-grid" id="cards"></div>
+    </section>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/seed.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    CGC.ready().then(() => {
+      CGCUI.mountChrome("contato");
+      const s = CGC.settings();
+      document.getElementById("cards").innerHTML = `
+        <a class="contact-card" href="${s.instagram}" target="_blank" rel="noopener">
+          <p class="eyebrow">Rede</p>
+          <h3>Instagram</h3>
+          <p>${CGCUI.escapeHtml(s.instagramHandle)}</p>
+          <p>Bastidores, lançamentos e lives da casa.</p>
+        </a>
+        <a class="contact-card" href="${CGCUI.waLink(s.whatsapp)}" target="_blank" rel="noopener">
+          <p class="eyebrow">Conversa</p>
+          <h3>WhatsApp</h3>
+          <p>+${s.whatsapp}</p>
+          <p>Pedidos do acervo, imprensa e suporte aos concursos.</p>
+        </a>
+        <a class="contact-card" href="${s.youtube}" target="_blank" rel="noopener">
+          <p class="eyebrow">Vídeo</p>
+          <h3>YouTube</h3>
+          <p>Canal da editora</p>
+          <p>Leituras, mesas e o making-of dos livros.</p>
+        </a>
+      `;
+    });
+  </script>
+</body>
+</html>
