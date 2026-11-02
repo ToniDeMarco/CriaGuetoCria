@@ -1388,18 +1388,18 @@ h2.display em { font-style: italic; color: var(--red); }
   .badge::before { inset: 21px; }
   .badge img { width: 32px; }
   :root { --header-h: 64px; }
-  .grid-books, .contest-grid, .contact-grid, .footer-grid, .stats { grid-template-columns: 1fr; }
-  /* Destaques da página inicial: dois livros lado a lado, como no tablet, com a capa em escala menor.
-     São 5 destaques; o 5º fica de fora para fechar duas fileiras certinhas. */
-  #featured-books { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .contest-grid, .contact-grid, .footer-grid, .stats { grid-template-columns: 1fr; }
+  /* Livros (destaques da inicial e biblioteca): dois lado a lado, como no tablet, com a capa em escala menor.
+     Os destaques são 5; o 5º fica de fora para fechar duas fileiras certinhas. */
+  .grid-books { grid-template-columns: 1fr 1fr; gap: 22px 14px; }
   #featured-books .book-card:nth-child(n + 5) { display: none; }
-  #featured-books .book-cover { padding: 14px 12px; }
-  #featured-books .book-cover::before { inset: 7px; }
-  #featured-books .book-cover h3 { font-size: 16px; margin-bottom: 6px; }
-  #featured-books .book-cover p { font-size: 12px; }
-  #featured-books .book-cover-kicker { top: 14px; left: 12px; right: 12px; font-size: 7.5px; letter-spacing: 0.22em; }
-  #featured-books .book-cover-meta { font-size: 9.5px; margin-top: 6px; }
-  #featured-books .book-meta { font-size: 9.5px; letter-spacing: 0.08em; }
+  .grid-books .book-cover { padding: 14px 12px; }
+  .grid-books .book-cover::before { inset: 7px; }
+  .grid-books .book-cover h3 { font-size: 16px; margin-bottom: 6px; }
+  .grid-books .book-cover p { font-size: 12px; }
+  .grid-books .book-cover-kicker { top: 14px; left: 12px; right: 12px; font-size: 7.5px; letter-spacing: 0.22em; }
+  .grid-books .book-cover-meta { font-size: 9.5px; margin-top: 6px; }
+  .grid-books .book-meta { font-size: 9.5px; letter-spacing: 0.08em; }
   .hero-copy, .split-story .copy, .farmers-copy, .farmers-photo { padding: 40px 22px; }
   .hero-copy { padding-bottom: 96px; } /* deixa os botões acima do botão flutuante do WhatsApp */
   .hero h1 { font-size: clamp(34px, 9.5vw, 48px); }
