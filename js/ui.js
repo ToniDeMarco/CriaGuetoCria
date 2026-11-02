@@ -10,17 +10,14 @@
   function headerHTML(page, s) {
     return `
       <div class="topbar">
-        <span class="topbar-handle">${s.instagramHandle}</span>
+        <span class="topbar-handle">${escapeHtml(s.instagramHandle)}</span>
         <span class="topbar-line"></span>
         <span>Editora · ${escapeHtml(s.city)}</span>
       </div>
       <header class="site-header">
-        <a class="brand" href="index.html" aria-label="Cria Gueto Cria — início">
+        <a class="brand" href="index.html" title="Início">
           <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 64 64" width="36" height="36">
-              <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="2"/>
-              <path d="M32 8 L36 24 L52 24 L39 34 L44 50 L32 40 L20 50 L25 34 L12 24 L28 24 Z" fill="currentColor"/>
-            </svg>
+            <img src="assets/img/sankofa-mark.webp" alt="" width="49" height="46" />
           </span>
           <span class="brand-text">
             <strong>Cria Gueto Cria</strong>
@@ -47,7 +44,7 @@
         <div class="footer-grid">
           <div>
             <p class="footer-brand">Cria Gueto Cria</p>
-            <p class="footer-tag">${s.tagline}</p>
+            <p class="footer-tag">${escapeHtml(s.tagline)}</p>
           </div>
           <div>
             <p class="footer-k">Casa</p>
@@ -58,10 +55,10 @@
           </div>
           <div>
             <p class="footer-k">Redes</p>
-            <a href="${s.instagram}" target="_blank" rel="noopener">Instagram ${s.instagramHandle}</a>
-            <a href="${s.youtube}" target="_blank" rel="noopener">YouTube</a>
+            <a href="${escapeHtml(s.instagram)}" target="_blank" rel="noopener">Instagram ${escapeHtml(s.instagramHandle)}</a>
+            <a href="${escapeHtml(s.youtube)}" target="_blank" rel="noopener">YouTube</a>
             <a href="${waLink(s.whatsapp)}" target="_blank" rel="noopener">WhatsApp</a>
-            <a href="mailto:${s.email}">${s.email}</a>
+            <a href="mailto:${escapeHtml(s.email)}">${escapeHtml(s.email)}</a>
           </div>
         </div>
         <div class="footer-bottom">
@@ -74,11 +71,14 @@
       </a>`;
   }
 
+  // Cabeçalho e rodapé. O build já deixa os dois no HTML (para buscadores e IAs que não rodam
+  // JavaScript); aqui eles são refeitos com os dados ao vivo, sem duplicar o rodapé.
   function mountChrome(page) {
     const s = CGC.settings();
     const mount = $("#site-chrome");
     if (mount) {
       mount.innerHTML = headerHTML(page, s);
+      $$(".site-footer, .wa-float").forEach((el) => el.remove());
       document.body.insertAdjacentHTML("beforeend", footerHTML(s));
     }
     const toggle = $(".nav-toggle");
@@ -94,6 +94,34 @@
     document.documentElement.style.setProperty("--ig", s.instagramHandle);
   }
 
+  // Faixa infinita: clona o grupo até cobrir a tela e rola exatamente a largura de um grupo,
+  // para emendar sem salto. Velocidade constante (px por segundo) em qualquer largura de tela.
+  function marquee(root, speed = 45) {
+    const track = root && $(".lines-track", root);
+    const group = track && $(".lines-group", track);
+    if (!group) return;
+    function build() {
+      $$("[data-clone]", track).forEach((el) => el.remove());
+      const w = group.getBoundingClientRect().width;
+      if (!w) return;
+      for (let i = Math.ceil(root.clientWidth / w); i >= 0; i--) {
+        const copy = group.cloneNode(true);
+        copy.setAttribute("aria-hidden", "true");
+        copy.setAttribute("data-clone", "");
+        track.appendChild(copy);
+      }
+      track.style.setProperty("--loop", w + "px");
+      track.style.setProperty("--dur", w / speed + "s");
+    }
+    build();
+    if (document.fonts) document.fonts.ready.then(build); // a largura muda quando a fonte carrega
+    let timer;
+    window.addEventListener("resize", () => {
+      clearTimeout(timer);
+      timer = setTimeout(build, 200);
+    });
+  }
+
   function coverStyle(book, i = 0) {
     const hues = [8, 18, 28, 350, 205, 32, 12, 22];
     const h = hues[(book.title.length + (book.year || 0) + i) % hues.length];
@@ -101,10 +129,11 @@
   }
 
   // Imagem da capa por cima da capa desenhada; se não carregar, some e fica a desenhada.
-  function coverImg(book) {
-    const src = CGC.coverImage(book.coverUrl);
+  // width: largura da miniatura pedida ao Drive (cards ~ 240px na tela, ficha ~ 380px; o dobro para telas retina).
+  function coverImg(book, width = 480) {
+    const src = CGC.coverImage(book.coverUrl, width);
     if (!src) return "";
-    return `<img class="book-cover-img" src="${escapeHtml(src)}" alt="Capa de ${escapeHtml(book.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.classList.remove('has-image');this.remove()" />`;
+    return `<img class="book-cover-img" src="${escapeHtml(src)}" alt="Capa de ${escapeHtml(book.title)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.parentNode.classList.remove('has-image');this.remove()" />`;
   }
 
   function coverClass(book, extra = "") {
@@ -126,6 +155,45 @@
           <span>${book.pages} pág.</span>
         </div>
       </article>`;
+  }
+
+  // Card de edital. "full" é a versão da página de concursos (com data de publicação).
+  function contestCard(c, full = false) {
+    const meta = full
+      ? `${escapeHtml(c.category)} · publicado ${formatDate(c.publishedAt)} · prazo ${formatDate(c.deadline)}`
+      : `${escapeHtml(c.category)} · ${formatDate(c.deadline)}`;
+    const btn = full ? `<a class="btn btn-solid" href="concurso.html?id=${encodeURIComponent(c.id)}">Abrir regulamento</a>`
+      : `<a class="btn btn-ghost dark" href="concurso.html?id=${encodeURIComponent(c.id)}">Ler regulamento</a>`;
+    return `
+        <article class="contest-card">
+          <span class="pill">${statusLabel(CGC.statusOf(c))}</span>
+          <h3>${escapeHtml(c.title)}</h3>
+          <p>${escapeHtml(c.excerpt)}</p>
+          <p class="meta">${meta}</p>
+          <p>${btn}</p>
+        </article>`;
+  }
+
+  function contactCards(s) {
+    return `
+        <a class="contact-card" href="${escapeHtml(s.instagram)}" target="_blank" rel="noopener">
+          <p class="eyebrow">Rede</p>
+          <h3>Instagram</h3>
+          <p>${escapeHtml(s.instagramHandle)}</p>
+          <p>Bastidores, lançamentos e lives da casa.</p>
+        </a>
+        <a class="contact-card" href="${waLink(s.whatsapp)}" target="_blank" rel="noopener">
+          <p class="eyebrow">Conversa</p>
+          <h3>WhatsApp</h3>
+          <p>+${escapeHtml(s.whatsapp)}</p>
+          <p>Pedidos do acervo, imprensa e suporte aos concursos.</p>
+        </a>
+        <a class="contact-card" href="${escapeHtml(s.youtube)}" target="_blank" rel="noopener">
+          <p class="eyebrow">Vídeo</p>
+          <h3>YouTube</h3>
+          <p>Canal da editora</p>
+          <p>Leituras, mesas e o making-of dos livros.</p>
+        </a>`;
   }
 
   function escapeHtml(str) {
@@ -159,7 +227,7 @@
         <button class="modal-close" aria-label="Fechar">×</button>
         <div class="modal-grid">
           <div class="${coverClass(book, " lg")}" style="${coverStyle(book)}">
-            ${coverImg(book)}
+            ${coverImg(book, 800)}
             <span class="book-cover-kicker">Cria Gueto Cria</span>
             <h3 id="book-title">${escapeHtml(book.title)}</h3>
             <p>${escapeHtml(book.author)}</p>
@@ -213,5 +281,10 @@
     coverStyle,
     coverImg,
     coverClass,
+    marquee,
+    contestCard,
+    contactCards,
+    headerHTML,
+    footerHTML,
   };
 })();

@@ -1,0 +1,12 @@
+{
+  "name": "cria-gueto-cria",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "imagens": "node scripts/imagens.mjs"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.5"
+  }
+}

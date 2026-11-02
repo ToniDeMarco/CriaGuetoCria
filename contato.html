@@ -4,9 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contato — Cria Gueto Cria</title>
+  <meta name="description" content="Fale com a Cria Gueto Cria pelo WhatsApp, Instagram ou YouTube: originais, imprensa, livrarias e dúvidas sobre os concursos literários." />
+  <meta name="theme-color" content="#9b1a1c" />
+  <link rel="preconnect" href="https://bgwjnjauvtwvcwzzmemj.supabase.co" crossorigin />
+  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/outfit.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" as="image" type="image/webp" href="assets/img/padrao-textil-420.webp" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+  <meta property="og:site_name" content="Cria Gueto Cria" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Contato — Cria Gueto Cria" />
+  <meta property="og:description" content="Fale com a Cria Gueto Cria pelo WhatsApp, Instagram ou YouTube: originais, imprensa, livrarias e dúvidas sobre os concursos literários." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <!-- O build (npm run build) acrescenta aqui: canonical, og:url, og:image e dados estruturados (JSON-LD). -->
 </head>
 <body>
+  <script src="js/preloader.js"></script>
   <div class="page-wrap">
     <div id="site-chrome"></div>
     <header class="page-hero">
@@ -17,36 +33,18 @@
     <section class="section">
       <div class="contact-grid" id="cards"></div>
     </section>
+    <!-- /critico -->
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
   <script src="js/config.js"></script>
   <script src="js/seed.js"></script>
   <script src="js/store.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/analytics.js"></script>
   <script>
     CGC.ready().then(() => {
       CGCUI.mountChrome("contato");
       const s = CGC.settings();
-      document.getElementById("cards").innerHTML = `
-        <a class="contact-card" href="${s.instagram}" target="_blank" rel="noopener">
-          <p class="eyebrow">Rede</p>
-          <h3>Instagram</h3>
-          <p>${CGCUI.escapeHtml(s.instagramHandle)}</p>
-          <p>Bastidores, lançamentos e lives da casa.</p>
-        </a>
-        <a class="contact-card" href="${CGCUI.waLink(s.whatsapp)}" target="_blank" rel="noopener">
-          <p class="eyebrow">Conversa</p>
-          <h3>WhatsApp</h3>
-          <p>+${s.whatsapp}</p>
-          <p>Pedidos do acervo, imprensa e suporte aos concursos.</p>
-        </a>
-        <a class="contact-card" href="${s.youtube}" target="_blank" rel="noopener">
-          <p class="eyebrow">Vídeo</p>
-          <h3>YouTube</h3>
-          <p>Canal da editora</p>
-          <p>Leituras, mesas e o making-of dos livros.</p>
-        </a>
-      `;
+      document.getElementById("cards").innerHTML = CGCUI.contactCards(s);
     });
   </script>
 </body>

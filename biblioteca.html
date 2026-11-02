@@ -3,10 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Biblioteca digital — Cria Gueto Cria</title>
+  <title>Biblioteca digital de autoras negras — Cria Gueto Cria</title>
+  <meta name="description" content="Acervo digital da Cria Gueto Cria com títulos de mulheres negras: poesia, romance, ensaio, contos, memória, infantojuvenil e teatro. Busque por título, autora ou ISBN." />
+  <meta name="theme-color" content="#9b1a1c" />
+  <link rel="preconnect" href="https://bgwjnjauvtwvcwzzmemj.supabase.co" crossorigin />
+  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/outfit.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preconnect" href="https://lh3.googleusercontent.com" />
+  <link rel="preload" as="image" type="image/webp" href="assets/img/padrao-textil-420.webp" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+  <meta property="og:site_name" content="Cria Gueto Cria" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Biblioteca digital de autoras negras — Cria Gueto Cria" />
+  <meta property="og:description" content="Acervo digital da Cria Gueto Cria com títulos de mulheres negras: poesia, romance, ensaio, contos, memória, infantojuvenil e teatro. Busque por título, autora ou ISBN." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <!-- O build (npm run build) acrescenta aqui: canonical, og:url, og:image e dados estruturados (JSON-LD). -->
 </head>
 <body>
+  <script src="js/preloader.js"></script>
   <div class="page-wrap">
     <div id="site-chrome"></div>
     <header class="page-hero">
@@ -16,7 +33,7 @@
     </header>
     <section class="section">
       <div class="filters">
-        <input class="search" id="q" type="search" placeholder="Buscar por título, autora, ISBN…" />
+        <input class="search" id="q" type="search" placeholder="Buscar por título, autora, ISBN…" aria-label="Buscar no acervo" />
         <button class="chip is-on" data-f="all">Todos</button>
         <button class="chip" data-f="Poesia">Poesia</button>
         <button class="chip" data-f="Romance">Romance</button>
@@ -27,15 +44,17 @@
         <button class="chip" data-f="Antologia">Antologia</button>
         <button class="chip" data-f="Teatro">Teatro</button>
       </div>
+      <h2 class="sr-only">Títulos do acervo</h2>
       <p class="count" id="count" style="max-width:1180px;margin:0 auto 18px"></p>
       <div class="grid-books" id="shelf"></div>
     </section>
+    <!-- /critico -->
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
   <script src="js/config.js"></script>
   <script src="js/seed.js"></script>
   <script src="js/store.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/analytics.js"></script>
   <script>
     CGC.ready().then(() => {
       CGCUI.mountChrome("biblioteca");
@@ -65,7 +84,11 @@
         const card = e.target.closest(".book-card");
         if (card) CGCUI.openBookModal(card.dataset.id);
       });
+      // ?q=termo já chega buscando; ?livro=ID abre a ficha (links de anúncio e de compartilhamento)
+      const params = new URLSearchParams(location.search);
+      q.value = params.get("q") || "";
       render();
+      if (params.get("livro")) CGCUI.openBookModal(params.get("livro"));
     });
   </script>
 </body>

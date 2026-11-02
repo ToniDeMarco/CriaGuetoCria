@@ -3,10 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>A editora — Cria Gueto Cria</title>
+  <title>A editora — Cria Gueto Cria, casa de mulheres negras</title>
+  <meta name="description" content="Conheça a Cria Gueto Cria, editora de mulheres negras para mulheres negras, e as quatro linhas do catálogo: Raízes, Travessias, Ancestralidade e Vivências." />
+  <meta name="theme-color" content="#9b1a1c" />
+  <link rel="preconnect" href="https://bgwjnjauvtwvcwzzmemj.supabase.co" crossorigin />
+  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/outfit.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" as="image" type="image/webp" href="assets/img/padrao-textil-420.webp" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+  <meta property="og:site_name" content="Cria Gueto Cria" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="A editora — Cria Gueto Cria, casa de mulheres negras" />
+  <meta property="og:description" content="Conheça a Cria Gueto Cria, editora de mulheres negras para mulheres negras, e as quatro linhas do catálogo: Raízes, Travessias, Ancestralidade e Vivências." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <!-- O build (npm run build) acrescenta aqui: canonical, og:url, og:image e dados estruturados (JSON-LD). -->
 </head>
 <body>
+  <script src="js/preloader.js"></script>
   <div class="page-wrap">
     <div id="site-chrome"></div>
     <header class="page-hero">
@@ -16,22 +32,34 @@
     </header>
     <section class="section">
       <div class="about-grid">
-        <img src="assets/img/editora-retrato.jpg" alt="Retrato editorial de uma escritora negra em sua mesa de trabalho" />
+        <figure class="snapshot">
+          <span class="tape l" aria-hidden="true"></span><span class="tape r" aria-hidden="true"></span>
+          <img src="assets/img/editora-retrato-460.webp" srcset="assets/img/editora-retrato-460.webp 460w, assets/img/editora-retrato-616.webp 616w" sizes="(max-width: 640px) calc(100vw - 64px), 430px" width="616" height="825" alt="Foto de grupo: mulheres e homens sorrindo juntos em um auditório" decoding="async" />
+          <figcaption>Na mesa da casa</figcaption>
+          <span class="badge" aria-hidden="true">
+            <svg viewBox="0 0 120 120">
+              <path id="badge-ring" d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0" fill="none" />
+              <text><textPath href="#badge-ring" textLength="268" lengthAdjust="spacing">CRIA GUETO CRIA · EDITORA ·</textPath></text>
+            </svg>
+            <img src="assets/img/sankofa-mark.webp" alt="" width="49" height="46" />
+          </span>
+        </figure>
         <div class="prose">
           <p class="eyebrow">Manifesto</p>
           <h2 class="display" style="color:var(--ink)">A frase negra não pede mesa. Ela <em>é</em> a mesa.</h2>
           <p>A Cria Gueto Cria existe para que o livro de uma mulher negra não precise se explicar para entrar no catálogo. Aqui o recorte é o centro: autoras cis e trans, de terreiro, de favela, de quilombo e da diáspora, publicadas com contrato, design e distribuição de editora — não de favor.</p>
           <p>O acervo digital, que vivia em pastas do Google Drive, passa a ter vitrine, busca e ficha. Os concursos literários deixam de circular só no Instagram: o regulamento fica permanente, datado, editável pela redação.</p>
-          <p>Quatro linhas atravessam o catálogo — Quilombo, Diáspora, Terreiro e Favela — como os quatro cantos de um pano. Não são prateleiras de marketing. São geografias da língua.</p>
+          <p>Quatro linhas atravessam o catálogo — Raízes, Travessias, Ancestralidade e Vivências — como os quatro cantos de um pano. Não são prateleiras de marketing. São geografias da língua.</p>
         </div>
       </div>
     </section>
+    <!-- /critico -->
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
   <script src="js/config.js"></script>
   <script src="js/seed.js"></script>
   <script src="js/store.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/analytics.js"></script>
   <script>CGC.ready().then(() => CGCUI.mountChrome("sobre"));</script>
 </body>
 </html>

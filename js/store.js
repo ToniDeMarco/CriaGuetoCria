@@ -3,9 +3,10 @@
   const LEGACY_KEY = "cgc.store.v1";
 
   const cfg = global.CGC_CONFIG || {};
-  const db = cfg.supabaseUrl && cfg.supabaseAnonKey && global.supabase
-    ? global.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey)
-    : null;
+  const configured = Boolean(cfg.supabaseUrl && cfg.supabaseAnonKey);
+  // As páginas públicas só leem, direto pela API REST (sem biblioteca externa).
+  // O cliente completo (login e gravação) só existe na área da editora, que carrega js/vendor/supabase.js.
+  const db = configured && global.supabase ? global.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey) : null;
 
   // Colunas de cada tabela, em camelCase; no banco ficam em snake_case (driveUrl -> drive_url).
   const COLS = {
@@ -49,7 +50,8 @@
   }
 
   function requireDb() {
-    if (!db) throw new Error("Supabase não configurado. Preencha js/config.js.");
+    if (!configured) throw new Error("Supabase não configurado. Preencha js/config.js.");
+    if (!db) throw new Error("Cliente do Supabase não carregado (js/vendor/supabase.js).");
   }
 
   function check(result) {
@@ -57,23 +59,31 @@
     return result.data;
   }
 
+  // GET na API REST do Supabase (leitura pública, liberada pelas regras do banco).
+  async function rest(path) {
+    const res = await global.fetch(cfg.supabaseUrl + "/rest/v1/" + path, {
+      headers: { apikey: cfg.supabaseAnonKey, Accept: "application/json" },
+    });
+    if (!res.ok) throw new Error("Supabase respondeu " + res.status + " em " + path.split("?")[0]);
+    return res.json();
+  }
+
   async function fetchAll() {
-    if (!db) {
+    if (!configured) {
       data = clone(global.CGC_SEED);
       api.source = "seed";
       return;
     }
     try {
       const [s, b, c] = await Promise.all([
-        db.from("settings").select("data").eq("id", 1).maybeSingle(),
-        db.from("books").select("*").order("created_at", { ascending: false }).order("id"),
-        db.from("contests").select("*").order("created_at", { ascending: false }).order("id"),
+        rest("settings?select=data&id=eq.1"),
+        rest("books?select=*&order=created_at.desc,id.asc"),
+        rest("contests?select=*&order=created_at.desc,id.asc"),
       ]);
-      const row = check(s);
       data = {
-        settings: { ...global.CGC_SEED.settings, ...(row && row.data) },
-        books: check(b).map((r) => fromRow("books", r)),
-        contests: check(c).map((r) => fromRow("contests", r)),
+        settings: { ...global.CGC_SEED.settings, ...(s[0] && s[0].data) },
+        books: b.map((r) => fromRow("books", r)),
+        contests: c.map((r) => fromRow("contests", r)),
       };
       api.source = "supabase";
     } catch (e) {
@@ -96,7 +106,7 @@
     // "supabase", "seed" (sem config) ou "erro" (falhou e mostrou o catálogo inicial).
     source: null,
     error: null,
-    configured: Boolean(db),
+    configured,
     ready() {
       if (!loading) loading = fetchAll();
       return loading;
@@ -226,12 +236,13 @@
       const id = driveId(url);
       return id ? "https://drive.google.com/file/d/" + id + "/preview" : url;
     },
-    // Endereço de imagem para a capa. Links do Drive viram miniatura (o arquivo precisa
-    // estar compartilhado como "Qualquer pessoa com o link"); outros links passam direto.
-    coverImage(url) {
+    // Endereço de imagem para a capa. Links do Drive viram miniatura em WebP na largura pedida,
+    // direto do servidor de imagens do Google (sem o redirecionamento do Drive, que grava cookie).
+    // O arquivo precisa estar compartilhado como "Qualquer pessoa com o link"; outros links passam direto.
+    coverImage(url, width = 1000) {
       if (!url) return "";
       const id = driveId(url);
-      return id ? "https://drive.google.com/thumbnail?id=" + id + "&sz=w1000" : url;
+      return id ? "https://lh3.googleusercontent.com/d/" + id + "=w" + width + "-rw" : url;
     },
   };
 

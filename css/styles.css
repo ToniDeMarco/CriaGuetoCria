@@ -1,10 +1,46 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400&family=Outfit:wght@300;400;500;600;700&display=swap");
+/* Fontes hospedadas no próprio site (variáveis, só o subconjunto latino, que cobre o português). */
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../assets/fonts/fraunces.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Fraunces";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../assets/fonts/fraunces-italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("../assets/fonts/cormorant-garamond.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("../assets/fonts/cormorant-garamond-italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../assets/fonts/outfit.woff2") format("woff2");
+}
 
 :root {
   --red: #9b1a1c;
   --red-deep: #6e1012;
   --red-hot: #c41e24;
   --orange: #e45a28;
+  --orange-ink: #b8431a; /* laranja para texto pequeno em fundo claro (contraste AA) */
   --sand: #f3ead8;
   --ivory: #f7f1e6;
   --paper: #efe6d4;
@@ -19,6 +55,14 @@
   --serif: "Cormorant Garamond", Georgia, serif;
   --sans: "Outfit", system-ui, sans-serif;
   --max: 1180px;
+  /* Altura da barra do topo + cabeçalho; o hero desconta isso para caber na primeira tela. */
+  --topbar-h: 38px;
+  --header-h: 76px;
+  --chrome-h: calc(var(--topbar-h) + var(--header-h));
+  /* Listra kente (cores da casa), usada na faixa das linhas e nos divisores de seção. */
+  --kente: repeating-linear-gradient(90deg,
+    var(--red) 0 30px, var(--gold) 30px 36px, #1f5c46 36px 54px, var(--gold) 54px 60px,
+    var(--orange) 60px 84px, #171311 84px 88px, var(--navy) 88px 106px, #171311 106px 110px);
 }
 
 * { box-sizing: border-box; }
@@ -30,8 +74,10 @@ body {
   background: #14110f;
   line-height: 1.5;
 }
-img { max-width: 100%; display: block; }
+img { max-width: 100%; height: auto; display: block; } /* height:auto: as fotos têm width/height no HTML só para reservar o espaço */
 a { color: inherit; text-decoration: none; }
+/* Texto só para leitores de tela e buscadores. */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 button, input, select, textarea { font-family: inherit; }
 .page-wrap {
   background: var(--cream);
@@ -44,14 +90,19 @@ button, input, select, textarea { font-family: inherit; }
   position: fixed;
   inset: 0;
   opacity: 0.045;
-  background-image: url("../assets/img/padrao-textil.jpg");
+  /* versão leve: o fundo fixo cobre a tela inteira e conta como o maior elemento (LCP) no celular */
+  background-image: url("../assets/img/padrao-textil-420.webp");
   background-size: 420px;
   mix-blend-mode: multiply;
   z-index: 0;
 }
 .page-wrap > * { position: relative; z-index: 1; }
+/* Reserva o espaço do cabeçalho enquanto os dados carregam, sem a página pular. */
+/* z-index acima das seções seguintes: o menu do celular abre por cima do conteúdo. */
+#site-chrome { min-height: var(--chrome-h); z-index: 15; }
 
 .topbar {
+  height: var(--topbar-h);
   background: #171311;
   color: #e8dcc8;
   display: flex;
@@ -61,7 +112,7 @@ button, input, select, textarea { font-family: inherit; }
   font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  padding: 10px 20px;
+  padding: 0 20px;
   white-space: nowrap;
   overflow: hidden;
 }
@@ -69,15 +120,27 @@ button, input, select, textarea { font-family: inherit; }
 .topbar-line { width: 42px; height: 1px; background: #c9a24a; }
 
 .site-header {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 24px;
-  padding: 18px 32px;
+  height: var(--header-h);
+  padding: 0 32px 6px; /* os 6px de baixo são da listra kente, dentro da altura do cabeçalho */
   background: var(--ivory);
-  border-bottom: 1px solid var(--stroke);
+}
+/* Listra kente separando o cabeçalho do conteúdo (a mesma da faixa das linhas). */
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 6px;
+  background: var(--kente);
 }
 .brand { display: flex; align-items: center; gap: 12px; color: var(--red-deep); }
 .brand-mark { color: var(--red); display: grid; place-items: center; }
+.brand-mark img { height: 46px; width: auto; }
 .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
 .brand-text strong {
   font-family: var(--display);
@@ -108,8 +171,9 @@ button, input, select, textarea { font-family: inherit; }
   letter-spacing: 0.16em;
   text-transform: uppercase;
   border-radius: 999px;
+  --btn-fill: var(--red);
+  --btn-ink: #fff;
 }
-.header-cta:hover { background: var(--red); color: #fff; }
 .nav-toggle {
   display: none;
   margin-left: auto;
@@ -125,44 +189,35 @@ button, input, select, textarea { font-family: inherit; }
 .nav-toggle span:first-child { top: 16px; }
 .nav-toggle span:last-child { bottom: 16px; }
 
+/* Hero: ocupa a primeira tela inteira, descontando a barra do topo e o cabeçalho.
+   Tamanhos com vh para caber também em notebooks de tela baixa. */
 .hero {
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  min-height: 86vh;
-  background: var(--red);
+  grid-template-columns: 1.08fr 0.92fr;
+  min-height: calc(100vh - var(--chrome-h));
+  min-height: calc(100svh - var(--chrome-h));
+  background: #1b0f0c;
   color: #f8efe4;
   overflow: hidden;
-  position:relative;
-}
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 90px;
-  background:
-    radial-gradient(circle at 12% 120%, transparent 28px, rgba(255,255,255,0.06) 29px) 0 0 / 90px 90px,
-    radial-gradient(circle at 88% 120%, transparent 28px, rgba(255,255,255,0.06) 29px) 0 0 / 90px 90px;
-  opacity: 0.9;
-  pointer-events: none;
+  position: relative;
 }
 .hero-copy {
-  
-  padding: 72px 64px 80px;
+  padding: clamp(32px, 6vh, 88px) clamp(28px, 5.5vw, 88px);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  
+  /* Mesmo degradê do card da seção farmers: o vermelho domina e escurece para vinho-marrom. */
   background:
-    radial-gradient(circle at 0 0, rgba(255,255,255,0.08), transparent 42%),
-    linear-gradient(180deg, #b31f24 0%, #8e1619 100%);
+    radial-gradient(100% 70% at 0% 0%, rgba(200, 40, 38, 0.3), transparent 60%),
+    linear-gradient(160deg, #a51e22 0%, #8a1c1c 40%, #661c16 75%, #451a12 100%);
   position: relative;
+  z-index: 1;
+  container-type: inline-size; /* o título se dimensiona pela largura do card (unidade cqi) */
 }
 .hero-copy::before {
-
-
   content: "";
   position: absolute;
-  inset: 24px;
+  inset: clamp(14px, 2.4vh, 24px);
   border: 1px solid rgba(255,255,255,0.14);
   pointer-events: none;
 }
@@ -173,18 +228,41 @@ button, input, select, textarea { font-family: inherit; }
   opacity: 0.8;
   margin: 0 0 18px;
 }
+.hero .kicker {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  color: #ffd7a8;
+  opacity: 1;
+  margin-bottom: clamp(14px, 2.6vh, 26px);
+}
+.hero .kicker::before {
+  content: "";
+  width: 36px;
+  height: 1px;
+  background: var(--gold);
+}
+/* Título em duas linhas. A mais longa ("Nós criamos quatro linhas de mundo") mede 12,93em em
+   Fraunces 300 com tamanho óptico 100: com a fonte em 7,55% da largura do card, ela vai de borda
+   a borda (2% de folga). O opsz fica fixo porque, no automático, a largura das letras muda com o tamanho. */
 .hero h1 {
   font-family: var(--display);
   font-weight: 300;
-  font-size: clamp(34px, 4.6vw, 62px);
-  line-height: 1.05;
-  margin: 0 0 18px;
-  max-width: 12ch;
+  font-optical-sizing: none;
+  font-variation-settings: "opsz" 100;
+  font-size: clamp(32px, 7.55cqi, 96px);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  margin: 0 0 clamp(16px, 2.8vh, 28px);
+}
+.hero h1 > span {
+  display: block;
+  white-space: nowrap;
 }
 .hero h1 em {
   font-style: italic;
-  font-weight: 500;
-  display: block;
+  font-weight: 400;
   color: #ffd7a8;
 }
 .lede {
@@ -194,23 +272,67 @@ button, input, select, textarea { font-family: inherit; }
   opacity: 0.92;
   margin: 0 0 28px;
 }
+.hero .lede {
+  font-size: clamp(18px, min(3.4cqi, 3.3vh), 27px);
+  line-height: 1.45;
+  max-width: none;
+  margin-bottom: clamp(20px, 4vh, 36px);
+  text-align: justify;
+  hyphens: auto; /* quebra sílabas em português (lang="pt-BR") para não abrir buracos */
+  -webkit-hyphens: auto;
+}
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-.hero-note {
-  margin-top: 36px;
+.hero-actions .btn { min-height: 50px; padding: 0 28px; font-size: 14px; }
+.hero-stats {
+  list-style: none;
+  display: flex;
+  gap: clamp(20px, 3vw, 44px);
+  max-width: 600px;
+  margin: clamp(20px, 4.5vh, 56px) 0 0;
+  padding: clamp(14px, 2.4vh, 22px) 0 0;
+  border-top: 1px solid rgba(255, 215, 168, 0.24);
+}
+.hero-stats li {
   font-size: 12px;
-  letter-spacing: 0.14em;
+  line-height: 1.4;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  opacity: 0.7;
+  color: rgba(248, 239, 228, 0.72);
+}
+.hero-stats strong {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(30px, 4.6vh, 46px);
+  line-height: 1;
+  letter-spacing: 0;
+  color: #fff;
 }
 .hero-art {
   position: relative;
+  overflow: hidden;
   background: #1b0f0c;
 }
+/* A imagem não define a altura do hero: só preenche a coluna, focada no rosto. */
 .hero-art img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit:cover;
-  min-height: 86vh;
+  object-fit: cover;
+  object-position: 50% 28%;
+  animation: hero-settle 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.hero-art::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(110, 28, 24, 0.6) 0%, rgba(110, 28, 24, 0) 18%),
+    linear-gradient(0deg, rgba(27, 15, 12, 0.4) 0%, rgba(27, 15, 12, 0) 30%);
 }
 .corner {
   position: absolute;
@@ -222,6 +344,59 @@ button, input, select, textarea { font-family: inherit; }
 .corner.tr { top: 18px; right: 18px; border-left: 0; border-bottom: 0; }
 .corner.bl { bottom: 18px; left: 18px; border-right: 0; border-top: 0; }
 .corner.br { bottom: 18px; right: 18px; border-left: 0; border-top: 0; }
+.hero-scroll {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-left: 0.3em; /* compensa o espaçamento da última letra */
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #ffd7a8;
+}
+.hero-scroll::after {
+  content: "";
+  width: 1px;
+  height: 42px;
+  background: linear-gradient(#ffd7a8, rgba(255, 215, 168, 0));
+  transform-origin: top;
+  animation: hero-scroll 2.2s ease-in-out infinite;
+}
+.hero-copy > * { animation: hero-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.hero-copy > :nth-child(2) { animation-delay: 0.08s; }
+.hero-copy > :nth-child(3) { animation-delay: 0.16s; }
+.hero-copy > :nth-child(4) { animation-delay: 0.24s; }
+.hero-copy > :nth-child(5) { animation-delay: 0.32s; }
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hero-settle {
+  from { opacity: 0.6; transform: scale(1.06); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes hero-scroll {
+  0% { transform: scaleY(0); opacity: 1; }
+  60% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+/* Notebooks/tablets deitados: mais espaço para o texto, para o título caber em 4 linhas. */
+@media (min-width: 981px) and (max-width: 1240px) {
+  .hero { grid-template-columns: 1.3fr 0.7fr; }
+  .hero-stats li { white-space: nowrap; }
+}
+@media (min-width: 981px) and (max-height: 620px) {
+  .hero-stats { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy > *, .hero-art img, .hero-scroll::after { animation: none; }
+}
 
 .btn {
   display: inline-flex;
@@ -236,62 +411,174 @@ button, input, select, textarea { font-family: inherit; }
   letter-spacing: 0.12em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: 0.2s ease;
 }
-.btn-light { background: #f7efe2; color: var(--red-deep); }
-.btn-light:hover { background: #fff; }
-.btn-solid { background: var(--red); color: #fff; }
-.btn-solid:hover { background: var(--red-deep); }
-.btn-ghost { border-color: currentColor; background: transparent; }
-.btn-ghost.light { color: #f7efe2; border-color: rgba(247,239,226,0.5); }
-.btn-ghost.light:hover { background: rgba(255,255,255,0.08); }
+/* Variantes (antes do hover, para o hover vencer na cascata). */
+.btn-light { background-color: #f7efe2; color: var(--red-deep); }
+.btn-solid { background-color: var(--red); color: #fff; }
+.btn-ghost { border-color: currentColor; background-color: transparent; --btn-fill: var(--red); --btn-ink: #fff; }
+.btn-ghost.light { color: #f7efe2; border-color: rgba(247,239,226,0.5); --btn-fill: #f7efe2; --btn-ink: var(--red-deep); }
 .btn-ghost.dark { color: var(--red); }
+/* Hover dos botões: o preenchimento (--btn-fill) varre da esquerda para a direita,
+   o texto troca para --btn-ink e o botão sobe um pouco. Principais viram tinta + dourado,
+   os de contorno se preenchem com a cor do próprio contorno. */
+.btn,
+.header-cta {
+  background-image: linear-gradient(var(--btn-fill, var(--ink)), var(--btn-fill, var(--ink)));
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 0% 100%;
+  transition:
+    background-size 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+    color 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.btn:hover,
+.btn:focus-visible,
+.header-cta:hover,
+.header-cta:focus-visible {
+  background-size: 100% 100%;
+  color: var(--btn-ink, #ffd7a8);
+  border-color: var(--btn-fill, var(--ink));
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(40, 12, 6, 0.55);
+}
+.btn:active, .header-cta:active { transform: translateY(0); box-shadow: none; }
+.btn:focus-visible, .header-cta:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.btn:disabled { opacity: 0.6; cursor: wait; transform: none; box-shadow: none; }
 
-.territories {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  padding: 28px 32px 8px;
-  background: var(--ivory);
-}
-.terr {
-  min-height: 168px;
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  color: #f6ecdc;
+/* Faixa infinita das linhas editoriais (CGCUI.marquee): fundo escuro com a estampa da casa,
+   listras kente em cima e embaixo, símbolos Adinkra em dourado. */
+.lines-band {
   position: relative;
+  padding: 34px 0;
   overflow: hidden;
+  color: #f3eadc;
+  background:
+    linear-gradient(rgba(23, 19, 17, 0.93), rgba(23, 19, 17, 0.93)),
+    url("../assets/img/padrao-textil-760.webp") center / 360px;
 }
-.terr h3 {
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: 22px;
-  margin: 0;
-  position: relative;
-  letter-spacing: 0.04em;
-}
-.terr small {
-  position: relative;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  font-size: 10px;
-  opacity: 0.8;
-}
-.terr::after {
+.lines-band::before,
+.lines-band::after {
   content: "";
   position: absolute;
-  inset: 0;
-  background-image: url("../assets/img/padrao-textil.jpg");
-  background-size: cover;
-  opacity: 0.18;
-  mix-blend-mode: overlay;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: var(--kente);
 }
-.t1 { background: #ead7b2; color: #6a4a1e; }
-.t2 { background: #23456e; }
-.t3 { background: #d24a24; }
-.t4 { background: #f0d9a8; color: #6a3b12; }
+.lines-band::before { top: 0; }
+.lines-band::after { bottom: 0; background-position: 55px 0; }
+.lines-viewport {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.lines-track {
+  display: flex;
+  width: max-content;
+  animation: lines-scroll var(--dur, 40s) linear infinite;
+}
+.lines-band:hover .lines-track { animation-play-state: paused; }
+.lines-group {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lines-group li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 48px;
+  white-space: nowrap;
+}
+.lines-group li::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  opacity: 0.55;
+}
+.adinkra {
+  flex: none;
+  width: clamp(36px, 3.4vw, 48px);
+  height: clamp(36px, 3.4vw, 48px);
+  color: var(--gold);
+}
+.lines-name {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(30px, 3.6vw, 50px);
+  line-height: 1;
+  color: #f8efe4;
+}
+.lines-meaning {
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(255, 215, 168, 0.72);
+}
+/* Divisor de seção: listra kente com um medalhão Adinkra no centro, metade sobre cada seção. */
+.page-wrap > .kente-divider {
+  position: relative;
+  z-index: 3;
+  height: 6px;
+  background: var(--kente);
+}
+.kente-divider::before,
+.kente-divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  background: var(--gold);
+  box-shadow: 0 0 0 2px #171311;
+  transform: rotate(45deg);
+}
+.kente-divider::before { left: calc(50% - 64px); }
+.kente-divider::after { right: calc(50% - 64px); }
+.kente-medal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    linear-gradient(rgba(23, 19, 17, 0.9), rgba(23, 19, 17, 0.9)),
+    url("../assets/img/padrao-textil-760.webp") center / 160px;
+  box-shadow:
+    0 0 0 2px var(--gold),
+    0 0 0 6px #171311,
+    0 0 0 7px rgba(201, 162, 74, 0.5),
+    0 10px 24px rgba(40, 14, 8, 0.35);
+}
+.kente-medal .adinkra { width: 32px; height: 32px; }
+
+@keyframes lines-scroll {
+  to { transform: translateX(calc(-1 * var(--loop, 50%))); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lines-track { animation: none; width: auto; justify-content: center; }
+  .lines-group { flex-wrap: wrap; justify-content: center; row-gap: 22px; }
+  .lines-group[data-clone] { display: none; }
+}
 
 .split-story {
   display: grid;
@@ -309,7 +596,7 @@ button, input, select, textarea { font-family: inherit; }
   font-size: 11px;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--orange);
+  color: var(--orange-ink);
   margin: 0 0 12px;
 }
 h2.display {
@@ -329,32 +616,111 @@ h2.display em { font-style: italic; color: var(--red); }
 
 .farmers {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 520px;
+  grid-template-columns: 1.1fr 0.9fr;
+  min-height: 600px;
 }
+/* Quadro de tecido: superfície rebaixada com a estampa da casa, onde a foto fica alfinetada. */
 .farmers-photo {
-  background: var(--ivory);
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(255, 250, 240, 0.7), transparent 70%),
+    #e8dcc4;
+  box-shadow: inset 0 0 0 1px rgba(26, 18, 15, 0.06), inset 0 18px 60px rgba(80, 40, 12, 0.14);
   display: grid;
   place-items: center;
-  padding: 56px;
+  padding: clamp(48px, 6vw, 80px) clamp(28px, 5vw, 72px);
   position: relative;
+  overflow: hidden;
 }
-.frame {
-  width: min(360px, 80%);
-  border: 10px solid var(--red);
-  box-shadow: var(--shadow);
-  position: relative;
-}
-.frame img { width: 100%; }
-.ornament {
+.farmers-photo::before {
+  content: "";
   position: absolute;
-  width: 54px; height: 54px;
-  border: 1px solid var(--red);
+  inset: 0;
+  opacity: 0.07;
+  background-image: url("../assets/img/padrao-textil-760.webp");
+  background-size: 380px;
+  mix-blend-mode: multiply;
+  pointer-events: none;
 }
-.ornament.a { top: 36px; left: 36px; border-right: 0; border-bottom: 0; }
-.ornament.b { bottom: 36px; right: 36px; border-left: 0; border-top: 0; }
+/* A foto impressa: borda de papel, legenda, leve inclinação e sombra em camadas. */
+.frame {
+  position: relative;
+  z-index: 1;
+  width: min(560px, 100%);
+  margin: 0;
+  padding: 14px 14px 0;
+  background: #fbf8f1;
+  transform: rotate(-2deg);
+  box-shadow:
+    0 1px 1px rgba(40, 20, 8, 0.14),
+    0 8px 16px -4px rgba(60, 30, 10, 0.18),
+    0 30px 50px -12px rgba(60, 30, 10, 0.32);
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.6s ease;
+}
+.frame:hover {
+  transform: rotate(-0.6deg) translateY(-6px);
+  box-shadow:
+    0 1px 1px rgba(40, 20, 8, 0.12),
+    0 14px 24px -6px rgba(60, 30, 10, 0.2),
+    0 44px 70px -16px rgba(60, 30, 10, 0.36);
+}
+.frame img {
+  width: 100%;
+  aspect-ratio: 1986 / 1502; /* recorta a margem branca de 3px do arquivo */
+  object-fit: cover;
+  object-position: 0 0;
+}
+/* brilho de papel fotográfico */
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 14px 14px auto;
+  aspect-ratio: 1986 / 1502;
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 38%);
+  pointer-events: none;
+}
+.frame figcaption {
+  padding: 14px 4px 16px;
+  text-align: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 21px;
+  line-height: 1;
+  color: var(--ink-soft);
+}
+/* Alfinetes: cabeça com volume e reflexo, e a sombra da agulha projetada no papel. */
+.pin {
+  position: absolute;
+  z-index: 2;
+  top: -9px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #ff9a8a 0 12%, #d4282c 34%, #9b1a1c 68%, #5e0d0f 100%);
+  box-shadow: inset -2px -3px 4px rgba(0, 0, 0, 0.25), 2px 4px 5px rgba(40, 10, 5, 0.35);
+}
+.pin::after {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 15px;
+  width: 2px;
+  height: 13px;
+  border-radius: 2px;
+  background: linear-gradient(rgba(40, 20, 10, 0.4), rgba(40, 20, 10, 0));
+  transform: rotate(-38deg);
+  transform-origin: top;
+  filter: blur(0.6px);
+}
+.pin.l { left: 26px; }
+.pin.r {
+  right: 26px;
+  background: radial-gradient(circle at 34% 30%, #fff1c4 0 12%, #e2b85a 34%, #b98a2c 68%, #6e4f12 100%);
+}
+/* Mesmo degradê do hero, mais suave: o vermelho domina e só escurece para marrom no canto inferior. */
 .farmers-copy {
-  background: var(--red);
+  background:
+    radial-gradient(100% 70% at 0% 0%, rgba(200, 40, 38, 0.3), transparent 60%),
+    linear-gradient(160deg, #a51e22 0%, #8a1c1c 40%, #661c16 75%, #451a12 100%);
   color: #f8efe4;
   padding: 72px 56px;
   display: flex;
@@ -370,6 +736,7 @@ h2.display em { font-style: italic; color: var(--red); }
   width: 280px; height: 280px;
   border-radius: 50%;
   border: 40px solid rgba(255,255,255,0.06);
+  pointer-events: none; /* decorativo: não pode bloquear o toque no botão */
 }
 .farmers-copy h2 {
   font-family: var(--display);
@@ -478,20 +845,22 @@ h2.display em { font-style: italic; color: var(--red); }
   gap: 18px;
 }
 .contest-card {
+  position: relative;
   background: #fff;
-  padding: 28px;
+  padding: 34px 28px 28px;
   border: 1px solid var(--stroke);
   min-height: 280px;
   display: flex;
   flex-direction: column;
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.45s ease, border-color 0.45s ease;
 }
 .pill {
   align-self: flex-start;
   font-size: 10px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  border: 1px solid var(--orange);
-  color: var(--orange);
+  border: 1px solid var(--orange-ink);
+  color: var(--orange-ink);
   padding: 4px 8px;
   border-radius: 999px;
   margin-bottom: 14px;
@@ -501,6 +870,7 @@ h2.display em { font-style: italic; color: var(--red); }
   font-size: 26px;
   margin: 0 0 10px;
   line-height: 1.15;
+  transition: color 0.35s ease;
 }
 .contest-card p { color: var(--ink-soft); flex: 1; }
 .contest-card .meta { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy); }
@@ -553,30 +923,71 @@ h2.display em { font-style: italic; color: var(--red); }
   place-items: center;
   z-index: 20;
   box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), background 0.3s ease;
+}
+/* anel que pulsa a partir do botão ao passar o mouse */
+.wa-float::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid #1f7a4d;
+  opacity: 0;
+  pointer-events: none;
+}
+.wa-float:hover,
+.wa-float:focus-visible { transform: scale(1.08); background: #186640; }
+.wa-float:hover::before,
+.wa-float:focus-visible::before { animation: wa-ring 1.4s ease-out infinite; }
+.wa-float:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+@keyframes wa-ring {
+  from { opacity: 0.7; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.6); }
 }
 
+/* Faixa de título das páginas internas: compacta, para o conteúdo aparecer logo. */
+/* Mesmo degradê suave do card da seção farmers: vermelho à esquerda, vinho-marrom à direita. */
 .page-hero {
-  background: var(--red);
+  background:
+    radial-gradient(100% 120% at 0% 0%, rgba(200, 40, 38, 0.3), transparent 60%),
+    linear-gradient(160deg, #a51e22 0%, #8a1c1c 40%, #661c16 75%, #451a12 100%);
   color: #f7efe2;
-  padding: 72px 32px 56px;
+  padding: clamp(28px, 5vh, 44px) 32px clamp(26px, 4.5vh, 40px);
   position: relative;
   overflow: hidden;
 }
 .page-hero h1 {
   font-family: var(--display);
-  font-weight: 400;
-  font-size: clamp(36px, 6vw, 68px);
-  margin: 8px 0 12px;
+  font-weight: 300;
+  font-size: clamp(30px, 3.6vw, 46px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin: 0 auto 8px;
   max-width: var(--max);
-  margin-left: auto; margin-right: auto;
 }
 .page-hero p {
   max-width: var(--max);
   margin: 0 auto;
   font-family: var(--serif);
-  font-size: 22px;
+  font-size: clamp(16px, 1.4vw, 19px);
   opacity: 0.9;
 }
+.page-hero .kicker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--sans);
+  font-size: 11px;
+  color: #ffd7a8;
+  opacity: 1;
+}
+.page-hero .kicker::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--gold);
+}
+.page-hero + .section { padding-top: 40px; }
 .filters {
   max-width: var(--max);
   margin: 0 auto 28px;
@@ -612,9 +1023,131 @@ h2.display em { font-style: italic; color: var(--red); }
   gap: 40px;
   align-items: center;
 }
-.about-grid img { width: 100%; object-fit: cover; min-height: 460px; }
+/* Retrato como fotografia impressa: papel com margem maior embaixo, fitas adesivas
+   segurando os cantos de cima e um bottom da casa preso no canto de baixo. */
+.snapshot {
+  position: relative;
+  width: min(460px, 100%);
+  margin: 24px auto 40px;
+  padding: 16px 16px 0;
+  background: #fbf8f1;
+  transform: rotate(1.6deg);
+  box-shadow:
+    0 1px 1px rgba(40, 20, 8, 0.14),
+    0 8px 16px -4px rgba(60, 30, 10, 0.18),
+    0 30px 50px -12px rgba(60, 30, 10, 0.32);
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.6s ease;
+}
+.snapshot:hover {
+  transform: rotate(0.5deg) translateY(-6px);
+  box-shadow:
+    0 1px 1px rgba(40, 20, 8, 0.12),
+    0 14px 24px -6px rgba(60, 30, 10, 0.2),
+    0 44px 70px -16px rgba(60, 30, 10, 0.36);
+}
+.snapshot > img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: 50% 30%;
+  filter: saturate(0.92) contrast(1.03);
+}
+/* brilho de papel fotográfico */
+.snapshot::after {
+  content: "";
+  position: absolute;
+  inset: 16px 16px auto;
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 40%);
+  pointer-events: none;
+}
+.snapshot figcaption {
+  padding: 16px 4px 22px;
+  text-align: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--ink-soft);
+}
+/* Fitas adesivas: translúcidas, com as pontas picotadas de quem rasgou com a mão. */
+.tape {
+  position: absolute;
+  z-index: 2;
+  top: -16px;
+  width: 128px;
+  height: 36px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.14) 0 2px, transparent 2px 7px),
+    rgba(236, 222, 190, 0.78);
+  box-shadow: 0 2px 4px rgba(40, 20, 8, 0.12);
+  clip-path: polygon(0 6%, 4% 0, 8% 8%, 92% 0, 96% 9%, 100% 2%, 100% 94%, 96% 100%, 92% 91%, 8% 100%, 4% 92%, 0 98%);
+}
+.tape.l { left: -34px; transform: rotate(-36deg); }
+/* a da direita é estampada com a mesma listra kente da casa */
+.tape.r {
+  right: -34px;
+  transform: rotate(34deg);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08)),
+    var(--kente);
+  opacity: 0.88;
+}
+/* Bottom (broche) com a logo: disco vermelho, nome da casa em volta e brilho de metal esmaltado. */
+.badge {
+  position: absolute;
+  z-index: 3;
+  right: -38px;
+  bottom: -34px;
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 40%, #b8262a 0%, #8e1619 62%, #5e0d0f 100%);
+  box-shadow:
+    inset 0 0 0 3px #e2b85a,
+    inset 0 0 0 5px rgba(94, 13, 15, 0.6),
+    0 3px 4px rgba(40, 10, 5, 0.3),
+    0 14px 24px -6px rgba(40, 10, 5, 0.45);
+  transform: rotate(-14deg);
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.snapshot:hover .badge { transform: rotate(-4deg) scale(1.04); }
+.badge svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.badge text {
+  font-family: var(--sans, sans-serif);
+  font-size: 10.5px;
+  font-weight: 600;
+  fill: #f7efe2;
+}
+/* disco central marfim onde fica a sankofa */
+.badge::before {
+  content: "";
+  position: absolute;
+  inset: 27px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #fffaf0, #efe3cb);
+  box-shadow: 0 0 0 2px #e2b85a, inset 0 2px 4px rgba(60, 30, 10, 0.25);
+}
+.badge img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 42px;
+  height: auto;
+  transform: translate(-50%, -50%);
+}
+/* reflexo do esmalte */
+.badge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0) 42%);
+  pointer-events: none;
+}
 .prose { font-family: var(--serif); font-size: 20px; color: var(--ink-soft); }
-.prose p { margin: 0 0 16px; }
+.prose p { margin: 0 0 16px; text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
 
 .contact-grid {
   max-width: var(--max);
@@ -623,26 +1156,118 @@ h2.display em { font-style: italic; color: var(--red); }
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
+/* Cards com listra kente (concursos e contato): no hover o card sobe, a listra engrossa
+   e a estampa corre como a faixa das linhas. O contato, que é todo clicável, ganha a seta. */
 .contact-card {
+  position: relative;
   background: #fff;
   border: 1px solid var(--stroke);
-  padding: 32px;
-  min-height: 220px;
+  padding: 38px 32px 84px;
+  min-height: 240px;
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.45s ease, border-color 0.45s ease;
+}
+.contest-card::before,
+.contact-card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  height: 6px;
+  background: var(--kente);
+  background-position: var(--kx, 0px) 0;
+  transition: height 0.35s ease;
+}
+.contest-card:nth-child(3n + 2), .contact-card:nth-child(3n + 2) { --kx: -36px; }
+.contest-card:nth-child(3n + 3), .contact-card:nth-child(3n + 3) { --kx: -72px; }
+.contact-card::after {
+  content: "→";
+  position: absolute;
+  right: 28px;
+  bottom: 26px;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(155, 26, 28, 0.35);
+  color: var(--red);
+  font-size: 18px;
+  transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease, transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .contact-card h3 {
   font-family: var(--display);
   font-size: 28px;
   margin: 0 0 8px;
+  transition: color 0.35s ease;
 }
 .contact-card p { color: var(--ink-soft); }
+.contest-card:hover,
+.contest-card:focus-within,
+.contact-card:hover,
+.contact-card:focus-visible {
+  transform: translateY(-6px);
+  border-color: rgba(155, 26, 28, 0.25);
+  box-shadow: 0 2px 4px rgba(60, 20, 10, 0.06), 0 24px 44px -14px rgba(80, 20, 12, 0.3);
+}
+.contact-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+.contest-card:hover::before,
+.contest-card:focus-within::before,
+.contact-card:hover::before,
+.contact-card:focus-visible::before {
+  height: 10px;
+  animation: kente-run 1.6s linear infinite;
+}
+.contact-card:hover::after,
+.contact-card:focus-visible::after {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+  transform: translateX(4px);
+}
+.contest-card:hover h3,
+.contest-card:focus-within h3,
+.contact-card:hover h3,
+.contact-card:focus-visible h3 { color: var(--red); }
+/* a estampa avança exatamente um ciclo (110px), então o loop não tem salto */
+@keyframes kente-run {
+  from { background-position-x: var(--kx, 0px); }
+  to { background-position-x: calc(var(--kx, 0px) + 110px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contest-card, .contest-card::before, .contact-card, .contact-card::before, .contact-card::after,
+  .btn, .header-cta, .wa-float { transition: none; }
+  .contest-card:hover, .contest-card:focus-within, .contact-card:hover, .contact-card:focus-visible,
+  .btn:hover, .btn:focus-visible, .header-cta:hover, .header-cta:focus-visible,
+  .wa-float:hover, .wa-float:focus-visible { transform: none; }
+  .contest-card:hover::before, .contest-card:focus-within::before,
+  .contact-card:hover::before, .contact-card:focus-visible::before,
+  .wa-float:hover::before, .wa-float:focus-visible::before { animation: none; }
+  .contact-card:hover::after, .contact-card:focus-visible::after { transform: none; }
+}
 
 .regulation {
+  position: relative;
   max-width: 760px;
   margin: 0 auto;
   background: #fff;
-  padding: 48px;
+  padding: 54px 48px;
   border: 1px solid var(--stroke);
 }
+/* Documento emoldurado pela listra kente em cima e embaixo, como a faixa das linhas. */
+.regulation::before,
+.regulation::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  height: 6px;
+  background: var(--kente);
+}
+.regulation::before { top: -1px; }
+.regulation::after { bottom: -1px; background-position: 55px 0; }
+.regulation > :first-child { margin-top: 0; }
+.regulation > :last-child { margin-bottom: 0; }
 .regulation h2 { font-family: var(--display); font-size: 26px; }
 .regulation p, .regulation li { font-family: var(--serif); font-size: 18px; color: var(--ink-soft); }
 
@@ -673,7 +1298,7 @@ h2.display em { font-style: italic; color: var(--red); }
 .modal-body h2 { font-family: var(--display); font-size: 34px; margin: 0 0 6px; }
 .synopsis { font-family: var(--serif); font-size: 18px; }
 .facts { list-style: none; padding: 0; display: flex; gap: 18px; }
-.facts span { display: block; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--orange); }
+.facts span { display: block; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--orange-ink); }
 .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0; }
 .fine { font-size: 12px; color: var(--ink-soft); }
 
@@ -723,9 +1348,19 @@ h2.display em { font-style: italic; color: var(--red); }
 
 @media (max-width: 980px) {
   .hero, .split-story, .farmers, .about-grid, .modal-grid { grid-template-columns: 1fr; }
-  .territories, .grid-books, .contest-grid, .contact-grid, .footer-grid { grid-template-columns: 1fr 1fr; }
+  .grid-books, .contest-grid, .contact-grid, .footer-grid { grid-template-columns: 1fr 1fr; }
   .landscape { clip-path: none; }
-  .hero-art img, .landscape img, .about-grid img { min-height: 360px; }
+  .landscape img { min-height: 360px; }
+  .hero-actions { justify-content: center; }
+  .split-story .copy p { max-width: none; text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+  /* No tablet/celular a ilustração vira fundo do hero e o texto vem por cima, embaixo. */
+  .hero-art { position: absolute; inset: 0; z-index: 0; }
+  .hero-art img { object-position: 50% 18%; }
+  .hero-art::before {
+    background: linear-gradient(180deg, rgba(138, 28, 28, 0.15) 0%, rgba(138, 28, 28, 0.5) 34%, rgba(102, 28, 22, 0.94) 62%, #451a12 100%);
+  }
+  .hero-copy { background: transparent; justify-content: flex-end; }
+  .corner, .hero-scroll { display: none; }
   .admin-shell { grid-template-columns: 1fr; }
   .nav-toggle { display: block; }
   .nav, .header-cta { display: none; }
@@ -733,17 +1368,165 @@ h2.display em { font-style: italic; color: var(--red); }
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 92px; left: 0; right: 0;
+    top: 100%; left: 0; right: 0;
     background: var(--ivory);
     padding: 18px 24px 28px;
     z-index: 12;
     border-bottom: 1px solid var(--stroke);
   }
-  .site-header { position: relative; }
 }
 @media (max-width: 640px) {
-  .territories, .grid-books, .contest-grid, .contact-grid, .footer-grid, .stats { grid-template-columns: 1fr; }
+  .snapshot { padding: 10px 10px 0; width: calc(100% - 24px); }
+  .snapshot::after { inset: 10px 10px auto; }
+  .snapshot figcaption { font-size: 18px; padding: 12px 4px 16px; }
+  .tape { width: 96px; height: 28px; top: -12px; }
+  .tape.l { left: -20px; }
+  .tape.r { right: -20px; }
+  .badge { width: 92px; height: 92px; right: -14px; bottom: -26px; }
+  .badge::before { inset: 21px; }
+  .badge img { width: 32px; }
+  :root { --header-h: 64px; }
+  .grid-books, .contest-grid, .contact-grid, .footer-grid, .stats { grid-template-columns: 1fr; }
   .hero-copy, .split-story .copy, .farmers-copy, .farmers-photo { padding: 40px 22px; }
-  .site-header { padding: 14px 16px; }
-  .regulation { padding: 24px; }
+  .hero-copy { padding-bottom: 96px; } /* deixa os botões acima do botão flutuante do WhatsApp */
+  .hero h1 { font-size: clamp(34px, 9.5vw, 48px); }
+  .hero h1 > span { white-space: normal; } /* no celular as linhas podem quebrar */
+  .hero .lede { font-size: 18px; }
+  .hero .kicker { font-size: 10px; letter-spacing: 0.24em; gap: 10px; }
+  .hero .kicker::before { width: 24px; }
+  .hero-actions { gap: 8px; flex-wrap: nowrap; }
+  .farmers-cta { text-align: center; }
+  /* título em cima, botão embaixo e centralizado */
+  .section-head.stack-mobile { flex-direction: column; align-items: stretch; gap: 16px; text-align: center; }
+  .section-head.stack-mobile .btn { align-self: center; }
+  .hero-actions .btn { min-height: 44px; padding: 0 14px; font-size: 11px; letter-spacing: 0.06em; white-space: nowrap; }
+  .hero-stats, .topbar-handle, .topbar-line { display: none; }
+  .frame { padding: 10px 10px 0; transform: rotate(-1.2deg); }
+  .kente-medal { width: 52px; height: 52px; }
+  .kente-medal .adinkra { width: 26px; height: 26px; }
+  .kente-divider::before { left: calc(50% - 52px); }
+  .kente-divider::after { right: calc(50% - 52px); }
+  .frame::after { inset: 10px 10px auto; }
+  .frame figcaption { font-size: 18px; padding: 12px 4px 14px; }
+  .site-header { padding: 0 16px 6px; }
+  .regulation { padding: 34px 24px; }
+}
+
+/* Preloader (js/preloader.js) */
+html.is-preloading { overflow: hidden; }
+html.is-preloading .hero-copy > *,
+html.is-preloading .hero-art img { animation-play-state: paused; }
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 42%, var(--cream) 0%, var(--ivory) 55%, var(--paper) 100%);
+  color: var(--ink);
+  transition: opacity 0.7s ease, visibility 0.7s ease;
+}
+.preloader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.025;
+  background-image: url("../assets/img/padrao-textil-420.webp");
+  background-size: 420px;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.preloader.is-leaving { opacity: 0; visibility: hidden; }
+.preloader-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.preloader-mark {
+  width: clamp(130px, 22vmin, 190px);
+  height: auto;
+  overflow: visible;
+}
+.preloader-mark image { opacity: 0; }
+.preloader-mark path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 3.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transition: opacity 0.5s ease;
+}
+.preloader.is-done .preloader-mark path { opacity: 0; }
+.preloader-name {
+  margin: 26px 0 0;
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.preloader-pct {
+  margin: 12px 0 0;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: clamp(44px, 8vmin, 72px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.preloader-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 22px;
+  margin: 0;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  opacity: 0.7;
+}
+.preloader-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: rgba(26, 18, 15, 0.08);
+}
+.preloader-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), var(--orange), var(--gold));
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+/* Aviso de cookies (js/analytics.js): só aparece se houver medição configurada em js/config.js. */
+.consent {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 40;
+  max-width: 460px;
+  padding: 18px 20px;
+  background: var(--ivory);
+  color: var(--ink);
+  border-top: 4px solid transparent;
+  border-image: var(--kente) 1;
+  box-shadow: 0 18px 40px -12px rgba(40, 12, 6, 0.45);
+  font-size: 14px;
+}
+.consent p { margin: 0 0 12px; color: var(--ink-soft); }
+.consent-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.consent .btn { min-height: 38px; padding: 0 16px; font-size: 12px; }
+@media (max-width: 640px) {
+  .consent { left: 12px; right: 12px; bottom: 12px; max-width: none; }
 }

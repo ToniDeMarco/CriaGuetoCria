@@ -4,36 +4,86 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cria Gueto Cria — Editora de mulheres negras</title>
-  <meta name="description" content="Editora de mulheres negras para mulheres negras. Biblioteca digital, concursos literários e um catálogo que trata a palavra como território." />
+  <meta name="description" content="Editora de mulheres negras para mulheres negras. Biblioteca digital com livros de autoras negras, concursos literários com regulamento aberto e originais de território real." />
+  <meta name="theme-color" content="#9b1a1c" />
+  <link rel="preconnect" href="https://bgwjnjauvtwvcwzzmemj.supabase.co" crossorigin />
+  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/outfit.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" as="image" type="image/webp" fetchpriority="high" imagesrcset="assets/img/hero-autora-640.webp 640w, assets/img/hero-autora-960.webp 960w, assets/img/hero-autora-1280.webp 1280w, assets/img/hero-autora-1920.webp 1920w" imagesizes="(max-width: 980px) 60vh, 46vw" />
+  <link rel="preconnect" href="https://lh3.googleusercontent.com" />
+  <link rel="preload" as="image" type="image/webp" href="assets/img/padrao-textil-420.webp" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+  <meta property="og:site_name" content="Cria Gueto Cria" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Cria Gueto Cria — Editora de mulheres negras" />
+  <meta property="og:description" content="Editora de mulheres negras para mulheres negras. Biblioteca digital com livros de autoras negras, concursos literários com regulamento aberto e originais de território real." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <!-- O build (npm run build) acrescenta aqui: canonical, og:url, og:image e dados estruturados (JSON-LD). -->
 </head>
 <body>
+  <script src="js/preloader.js"></script>
   <div class="page-wrap">
     <div id="site-chrome"></div>
 
     <section class="hero">
       <div class="hero-copy">
         <p class="kicker">Casa editorial · desde o gueto</p>
-        <h1>Nós criamos <em>quatro linhas de mundo</em> em livros de mulheres negras</h1>
-        <p class="lede">Cada título é um território: quilombo, diáspora, terreiro e favela. Uma editora que publica para quem sempre esteve no centro da história — e à margem do catálogo.</p>
+        <h1><span>Nós criamos <em>quatro linhas de mundo</em></span> <span>em livros de mulheres negras</span></h1>
+        <p class="lede">Cada título nasce de uma linha: raízes, travessias, ancestralidade e vivências. Uma editora que publica para quem sempre esteve no centro da história e à margem do catálogo.</p>
         <div class="hero-actions">
           <a class="btn btn-light" href="biblioteca.html">Entrar na biblioteca</a>
           <a class="btn btn-ghost light" href="concursos.html">Ver concursos</a>
         </div>
-        <p class="hero-note"><span data-book-count>50</span> títulos em circulação · Regulamentos abertos · Acervo no Drive da casa</p>
+        <ul class="hero-stats">
+          <li><strong data-book-count>50</strong>títulos no acervo</li>
+          <li><strong>4</strong>linhas editoriais</li>
+          <li><strong data-open-contests>3</strong>chamadas abertas</li>
+        </ul>
       </div>
       <div class="hero-art">
         <span class="corner tl"></span><span class="corner tr"></span>
         <span class="corner bl"></span><span class="corner br"></span>
-        <img src="assets/img/hero-autora.jpg" alt="Ilustração de uma mulher negra com um livro, em padrão têxtil africano" />
+        <img src="assets/img/hero-autora-960.webp" srcset="assets/img/hero-autora-640.webp 640w, assets/img/hero-autora-960.webp 960w, assets/img/hero-autora-1280.webp 1280w, assets/img/hero-autora-1920.webp 1920w" sizes="(max-width: 980px) 60vh, 46vw" width="1920" height="1278" alt="Jovem negra de cabelos cacheados, de costas, com mochila laranja diante das estantes de uma biblioteca" fetchpriority="high" />
+        <a class="hero-scroll" href="#linhas">Role</a>
       </div>
     </section>
+    <!-- /critico: o CSS do que está acima desta linha vai inline no build (primeira tela) -->
 
-    <section class="territories" aria-label="Linhas editoriais">
-      <article class="terr t1"><small>Linha 01</small><h3>Quilombo</h3></article>
-      <article class="terr t2"><small>Linha 02</small><h3>Diáspora</h3></article>
-      <article class="terr t3"><small>Linha 03</small><h3>Terreiro</h3></article>
-      <article class="terr t4"><small>Linha 04</small><h3>Favela</h3></article>
+    <!-- Faixa infinita das linhas editoriais, cada uma com um símbolo Adinkra.
+         O grupo é clonado por CGCUI.marquee() até cobrir a tela e rola sem emenda. -->
+    <section class="lines-band" id="linhas" aria-label="Linhas editoriais">
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <symbol id="adk-sankofa" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M24 41 C14 34 5 27 5 17 C5 10 10 6 15.5 6 C21 6 24 10.5 24 15.5 C24 20.5 20.5 23 17.5 21.2 C15.3 19.8 15.8 16.6 18.4 16.8"/>
+          <path d="M24 41 C34 34 43 27 43 17 C43 10 38 6 32.5 6 C27 6 24 10.5 24 15.5 C24 20.5 27.5 23 30.5 21.2 C32.7 19.8 32.2 16.6 29.6 16.8"/>
+          <path d="M24 41 C22 44.5 17.5 45.5 15.5 43 C14.2 41.3 15.6 39.2 17.6 40"/>
+          <path d="M24 41 C26 44.5 30.5 45.5 32.5 43 C33.8 41.3 32.4 39.2 30.4 40"/>
+        </g></symbol>
+        <symbol id="adk-nkyinkyim" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 4 L35 12 L13 20 L35 28 L13 36 L35 44"/>
+          <path d="M13 4 L13 11 L28 16.5 M35 12 L35 19 M20 22.5 L35 28 L35 35 L20 40.5 M13 20 L13 27 L28 32.5 M13 36 L13 43"/>
+        </g></symbol>
+        <symbol id="adk-adinkrahene" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.6">
+          <circle cx="24" cy="24" r="20"/><circle cx="24" cy="24" r="13"/><circle cx="24" cy="24" r="5.5" fill="currentColor"/>
+        </g></symbol>
+        <symbol id="adk-aya" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M24 3 V45"/>
+          <path d="M24 9 L16 5 M24 9 L32 5 M24 16 L13 10.5 M24 16 L35 10.5 M24 23 L11 16.5 M24 23 L37 16.5 M24 30 L11 23.5 M24 30 L37 23.5 M24 37 L13 31.5 M24 37 L35 31.5 M24 43 L17 39.5 M24 43 L31 39.5"/>
+        </g></symbol>
+      </svg>
+      <div class="lines-viewport">
+        <div class="lines-track">
+          <ul class="lines-group">
+            <li><svg class="adinkra" aria-hidden="true"><use href="#adk-sankofa"/></svg><span class="lines-name">Raízes</span><span class="lines-meaning">Sankofa<br>voltar e buscar</span></li>
+            <li><svg class="adinkra" aria-hidden="true"><use href="#adk-nkyinkyim"/></svg><span class="lines-name">Travessias</span><span class="lines-meaning">Nkyinkyim<br>as voltas da jornada</span></li>
+            <li><svg class="adinkra" aria-hidden="true"><use href="#adk-adinkrahene"/></svg><span class="lines-name">Ancestralidade</span><span class="lines-meaning">Adinkrahene<br>grandeza e liderança</span></li>
+            <li><svg class="adinkra" aria-hidden="true"><use href="#adk-aya"/></svg><span class="lines-name">Vivências</span><span class="lines-meaning">Aya<br>resistência e engenho</span></li>
+          </ul>
+        </div>
+      </div>
     </section>
 
     <section class="split-story">
@@ -41,30 +91,35 @@
         <p class="eyebrow">Manifesto</p>
         <h2 class="display">Livros que <em>reúnem o gosto</em> de um continente inteiro</h2>
         <p>A Cria Gueto Cria nasce da certeza de que literatura negra escrita por mulheres não é nicho: é fundação. Publicamos poesia, romance, ensaio, memória e teatro com o padrão de uma casa editorial clássica e a ética de uma ocupação.</p>
-        <p>O acervo digital — antes só no Google Drive — agora habita esta biblioteca. Os concursos literários, com regulamento integral, ficam à vista. A porta dos fundos, para quem edita a casa, também.</p>
+        <p>O acervo digital, antes disponível apenas no Google Drive, agora ganha espaço nesta biblioteca. Os concursos literários, com seus regulamentos completos, também estão disponíveis para consulta. E a área administrativa, destinada a quem mantém a casa em funcionamento, também tem seu espaço.</p>
       </div>
       <div class="landscape">
-        <img src="assets/img/paisagem-ancestral.jpg" alt="Paisagem ilustrada de savana ao entardecer, com acácias" />
+        <img src="assets/img/paisagem-ancestral-960.webp" srcset="assets/img/paisagem-ancestral-640.webp 640w, assets/img/paisagem-ancestral-960.webp 960w, assets/img/paisagem-ancestral-1280.webp 1280w, assets/img/paisagem-ancestral-1920.webp 1920w" sizes="(max-width: 980px) 100vw, 55vw" width="1920" height="1278" alt="Jovem negra de cabelos cacheados e blusa branca escolhendo um livro nas estantes de uma biblioteca" loading="lazy" decoding="async" />
       </div>
     </section>
 
+    <div class="kente-divider" role="separator"><span class="kente-medal"><svg class="adinkra" aria-hidden="true"><use href="#adk-sankofa"/></svg></span></div>
+
     <section class="farmers">
       <div class="farmers-photo">
-        <span class="ornament a"></span><span class="ornament b"></span>
         <figure class="frame">
-          <img src="assets/img/manuscrito-cafe.jpg" alt="Manuscrito entre ramos de café, metáfora da colheita literária" />
+          <span class="pin l" aria-hidden="true"></span><span class="pin r" aria-hidden="true"></span>
+          <img src="assets/img/manuscrito-cafe-560.webp" srcset="assets/img/manuscrito-cafe-560.webp 560w, assets/img/manuscrito-cafe-840.webp 840w, assets/img/manuscrito-cafe-1120.webp 1120w" sizes="(max-width: 980px) 90vw, 560px" width="1120" height="848" alt="Retrato de uma jovem negra de cabelos cacheados olhando para o alto, entre folhas verdes" loading="lazy" decoding="async" />
+          <figcaption>Território real</figcaption>
         </figure>
       </div>
       <div class="farmers-copy">
         <p class="kicker">Origem</p>
-        <h2>Originais de autoras verificadas — e de território real</h2>
-        <p>Nosso catálogo não sai de uma esteira anônima. Cada livro entra por leitura atenta, conversa com a autora e contrato justo. Selecionamos para publicar o sabor que só quem viveu a frase consegue escrever.</p>
-        <p style="margin-top:22px"><a class="btn btn-light" href="sobre.html">Conhecer a casa</a></p>
+        <h2>Originais de autoras verificadas; de território real</h2>
+        <p>Nossa missão é acolher e dar espaço às vozes de mulheres negras e fazer suas histórias chegarem cada vez mais longe. Acreditamos na literatura como expressão, memória e resistência. Por isso, reunimos e divulgamos gratuitamente obras que merecem ser lidas, compartilhadas e reconhecidas.</p>
+        <p class="farmers-cta" style="margin-top:22px"><a class="btn btn-light" href="sobre.html">Conhecer a casa</a></p>
       </div>
     </section>
 
+    <div class="kente-divider" role="separator"><span class="kente-medal"><svg class="adinkra" aria-hidden="true"><use href="#adk-adinkrahene"/></svg></span></div>
+
     <section class="section">
-      <div class="section-head">
+      <div class="section-head stack-mobile">
         <div>
           <p class="eyebrow">Catálogo</p>
           <h2 class="display">Destaques da casa</h2>
@@ -75,7 +130,7 @@
     </section>
 
     <section class="section" style="padding-top:0">
-      <div class="section-head">
+      <div class="section-head stack-mobile">
         <div>
           <p class="eyebrow">Chamadas</p>
           <h2 class="display">Concursos e regulamentos</h2>
@@ -86,29 +141,24 @@
     </section>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
   <script src="js/config.js"></script>
   <script src="js/seed.js"></script>
   <script src="js/store.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/analytics.js"></script>
   <script>
+    CGCUI.marquee(document.querySelector(".lines-band"));
     CGC.ready().then(() => {
       CGCUI.mountChrome("home");
+      const open = CGC.contests().filter((c) => CGC.statusOf(c) !== "encerrado").length;
+      document.querySelectorAll("[data-open-contests]").forEach((el) => (el.textContent = open));
       const books = CGC.books().slice(0, 5);
       document.getElementById("featured-books").innerHTML = books.map((b, i) => CGCUI.bookCard(b, i)).join("");
       document.getElementById("featured-books").addEventListener("click", (e) => {
         const card = e.target.closest(".book-card");
         if (card) CGCUI.openBookModal(card.dataset.id);
       });
-      document.getElementById("home-contests").innerHTML = CGC.contests().map((c) => `
-        <article class="contest-card">
-          <span class="pill">${CGCUI.statusLabel(CGC.statusOf(c))}</span>
-          <h3>${CGCUI.escapeHtml(c.title)}</h3>
-          <p>${CGCUI.escapeHtml(c.excerpt)}</p>
-          <p class="meta">${CGCUI.escapeHtml(c.category)} · ${CGCUI.formatDate(c.deadline)}</p>
-          <p><a class="btn btn-ghost dark" href="concurso.html?id=${encodeURIComponent(c.id)}">Ler regulamento</a></p>
-        </article>
-      `).join("");
+      document.getElementById("home-contests").innerHTML = CGC.contests().map((c) => CGCUI.contestCard(c)).join("");
     });
   </script>
 </body>

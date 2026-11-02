@@ -3,10 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Concursos literários — Cria Gueto Cria</title>
+  <title>Concursos literários para mulheres negras — Cria Gueto Cria</title>
+  <meta name="description" content="Editais e regulamentos oficiais dos concursos literários da Cria Gueto Cria: prazos, categorias e como inscrever o seu original." />
+  <meta name="theme-color" content="#9b1a1c" />
+  <link rel="preconnect" href="https://bgwjnjauvtwvcwzzmemj.supabase.co" crossorigin />
+  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/outfit.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" as="image" type="image/webp" href="assets/img/padrao-textil-420.webp" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+  <meta property="og:site_name" content="Cria Gueto Cria" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Concursos literários para mulheres negras — Cria Gueto Cria" />
+  <meta property="og:description" content="Editais e regulamentos oficiais dos concursos literários da Cria Gueto Cria: prazos, categorias e como inscrever o seu original." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <!-- O build (npm run build) acrescenta aqui: canonical, og:url, og:image e dados estruturados (JSON-LD). -->
 </head>
 <body>
+  <script src="js/preloader.js"></script>
   <div class="page-wrap">
     <div id="site-chrome"></div>
     <header class="page-hero">
@@ -17,25 +33,18 @@
     <section class="section">
       <div class="contest-grid" id="list"></div>
     </section>
+    <!-- /critico -->
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
   <script src="js/config.js"></script>
   <script src="js/seed.js"></script>
   <script src="js/store.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/analytics.js"></script>
   <script>
     CGC.ready().then(() => {
       CGCUI.mountChrome("concursos");
       const list = CGC.contests().slice().sort((a, b) => (b.publishedAt || "").localeCompare(a.publishedAt || ""));
-      document.getElementById("list").innerHTML = list.map((c) => `
-        <article class="contest-card">
-          <span class="pill">${CGCUI.statusLabel(CGC.statusOf(c))}</span>
-          <h3>${CGCUI.escapeHtml(c.title)}</h3>
-          <p>${CGCUI.escapeHtml(c.excerpt)}</p>
-          <p class="meta">${CGCUI.escapeHtml(c.category)} · publicado ${CGCUI.formatDate(c.publishedAt)} · prazo ${CGCUI.formatDate(c.deadline)}</p>
-          <p><a class="btn btn-solid" href="concurso.html?id=${encodeURIComponent(c.id)}">Abrir regulamento</a></p>
-        </article>
-      `).join("") || "<p>Nenhum edital publicado ainda.</p>";
+      document.getElementById("list").innerHTML = list.map((c) => CGCUI.contestCard(c, true)).join("") || "<p>Nenhum edital publicado ainda.</p>";
     });
   </script>
 </body>

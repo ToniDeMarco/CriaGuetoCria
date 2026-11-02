@@ -74,7 +74,7 @@
   function bookForm(book) {
     const b = book || {
       title: "", author: "", year: new Date().getFullYear(), genre: "Poesia",
-      territory: "Quilombo", pages: 120, isbn: "", driveUrl: "", synopsis: "",
+      territory: "Raízes", pages: 120, isbn: "", driveUrl: "", synopsis: "",
     };
     const form = document.getElementById("form");
     form.innerHTML = `
@@ -86,7 +86,7 @@
         <select id="g">${["Poesia","Romance","Ensaio","Contos","Memória","Infantojuvenil","Antologia","Teatro"].map((x) => `<option ${x===b.genre?"selected":""}>${x}</option>`).join("")}</select>
       </div>
       <div class="field"><span>Linha editorial</span>
-        <select id="tr">${["Quilombo","Diáspora","Terreiro","Favela"].map((x) => `<option ${x===b.territory?"selected":""}>${x}</option>`).join("")}</select>
+        <select id="tr">${["Raízes","Travessias","Ancestralidade","Vivências"].map((x) => `<option ${x===b.territory?"selected":""}>${x}</option>`).join("")}</select>
       </div>
       <div class="field"><span>Páginas</span><input id="p" type="number" value="${b.pages}" /></div>
       <div class="field"><span>ISBN</span><input id="i" value="${CGCUI.escapeHtml(b.isbn || "")}" /></div>
