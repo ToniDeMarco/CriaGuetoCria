@@ -36,6 +36,8 @@
 }
 
 :root {
+  /* Site só no tema claro: impede o navegador (Chrome/Samsung/Edge em modo escuro) de inverter as cores. */
+  color-scheme: only light;
   --red: #9b1a1c;
   --red-deep: #6e1012;
   --red-hot: #c41e24;
